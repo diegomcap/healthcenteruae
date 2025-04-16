@@ -231,6 +231,7 @@
                 if (validKeys.includes(accessKey)) {
                     usedKeys.push(accessKey);
                     localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
+                    localStorage.setItem('currentAccessKey', accessKey);
                     window.location.href = 'index.html';
                 } else {
                     errorMessage.textContent = 'Chave de acesso inválida. Por favor, tente novamente.';

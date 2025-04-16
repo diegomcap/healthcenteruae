@@ -109,30 +109,42 @@
         }
     </style>
     <script>
-        async function validateForm(event) {
+        function validateForm(event) {
             event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
             
-            try {
-                await fetch('https://formsubmit.co/assessment@healthcenter.ae', {
-                    method: 'POST',
-                    body: formData
-                });
-                window.location.href = 'thank_you.html';
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                alert('An error occurred while submitting the form. Please try again.');
-            }
+            // Get the form element
+            const form = document.getElementById('assessmentForm');
+            
+            // Add necessary hidden fields for FormSubmit
+            const hiddenFields = [
+                { name: '_next', value: 'thank_you.html' },
+                { name: '_subject', value: 'New Physiotherapy Assessment' },
+                { name: '_captcha', value: 'false' },
+                { name: '_template', value: 'table' }
+            ];
+            
+            // Add hidden fields
+            hiddenFields.forEach(field => {
+                if (!form.querySelector(`input[name="${field.name}"]`)) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = field.name;
+                    input.value = field.value;
+                    form.appendChild(input);
+                }
+            });
+            
+            // Submit the form
+            form.submit();
             return false;
-        }
+        });
     </script>
 </head>
 <body>
     <div class="container">
         <h1>Physiotherapy Assessment Form</h1>
         
-        <form id="assessmentForm" action="thank_you.html" method="POST" onsubmit="return validateForm(event)">
+        <form id="assessmentForm" action="https://formsubmit.co/assessment@healthcenter.ae" method="POST" onsubmit="return validateForm(event)">
             <!-- Basic Data -->
             <h2>Basic Information</h2>
             <div class="row">
@@ -399,7 +411,7 @@
                 const nextField = document.createElement('input');
                 nextField.setAttribute('type', 'hidden');
                 nextField.setAttribute('name', '_next');
-                nextField.setAttribute('value', 'http://localhost:3000/thank_you.html');
+                nextField.setAttribute('value', 'thank_you.html');
                 form.appendChild(nextField);
             }
             
@@ -407,7 +419,7 @@
                 const subjectField = document.createElement('input');
                 subjectField.setAttribute('type', 'hidden');
                 subjectField.setAttribute('name', '_subject');
-                subjectField.setAttribute('value', 'New Physiotherapy Assessment');
+                subjectField.setAttribute('value', 'New Pilates Assessment');
                 form.appendChild(subjectField);
             }
             

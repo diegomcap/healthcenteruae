@@ -290,38 +290,16 @@
         }
     </style>
     <script>
-        async function validateForm(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            
-            try {
-                // Envio por email usando FormSubmit
-                await fetch('https://formsubmit.co/assessment@healthcenter.ae', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Object.fromEntries(formData))
-                });
-
-                // Salvar localmente também
-                localStorage.setItem('formData', JSON.stringify(Object.fromEntries(formData)));
-                
-                window.location.href = 'thank_you.html';
-            } catch (error) {
-                console.error('Erro ao enviar formulário:', error);
-                alert('Ocorreu um erro ao enviar o formulário. Por favor, tente novamente.');
-            }
-            return false;
-        }
+        document.getElementById('assessmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            window.location.href = 'thank_you.html';
+        });
     </script>
 </head>
 <body>
     <div class="container">
         <h1>Pilates Assessment Form</h1>
-        <form id="pilatesAssessmentForm" action="https://formsubmit.co/assessment@healthcenter.ae" method="POST" onsubmit="return validateForm(event)">
+        <form id="assessmentForm" action="https://formsubmit.co/assessment@healthcenter.ae" method="POST" onsubmit="return validateForm(event)">
             <!-- Basic Information -->
             <h2>Personal Information</h2>
             <div class="row">
