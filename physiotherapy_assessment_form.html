@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physiotherapy Assessment Form</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .col {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 200px;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        @media (max-width: 768px) {
+            .col {
+                flex: 100%;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Physiotherapy Assessment Form</h1>
+        
+        <form id="assessmentForm" method="POST" action="https://formsubmit.co/assessment@healthcenter.ae">
+            <!-- Basic Data -->
+            <h2>Basic Information</h2>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="name" class="required">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="age" class="required">Age</label>
+                        <input type="number" id="age" name="age" min="1" max="120" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="height" class="required">Height (cm)</label>
+                        <input type="number" id="height" name="height" min="50" max="250" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="weight" class="required">Weight (kg)</label>
+                        <input type="number" id="weight" name="weight" step="0.1" min="1" max="300" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="bmi">BMI (Body Mass Index)</label>
+                        <input type="text" id="bmi" name="bmi" readonly>
+                    </div>
+                </div>
+            </div>
+            <style>
+    @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+        50% { transform: scale(1.05); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        100% { transform: scale(1); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    }
+    #bmiStatusDisplay {
+        animation: pulse 2s infinite;
+    }
+</style>
+<div id="bmiStatusDisplay" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000; max-width: 300px; text-align: center;"></div>
+            
+            <!-- Physiotherapy Assessment -->
+            <h2>Physiotherapy Assessment</h2>
+            <div class="form-group">
+                <label for="physicalCondition">Physical Condition</label>
+                <select id="physicalCondition" name="physicalCondition">
+                    <option value="">Select an option</option>
+                    <option value="sedentary">Sedentary</option>
+                    <option value="slightly_active">Slightly Active</option>
+                    <option value="moderately_active">Moderately Active</option>
+                    <option value="very_active">Very Active</option>
+                    <option value="athlete">Athlete</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="diagnosis">Diagnosis</label>
+                <input type="text" id="diagnosis" name="diagnosis">
+            </div>
+            <div class="form-group">
+                <label for="painLocation">Pain Location</label>
+                <input type="text" id="painLocation" name="painLocation" placeholder="Where is your pain located?">
+            </div>
+            <div class="form-group">
+                <label for="painDuration">Pain Duration</label>
+                <input type="text" id="painDuration" name="painDuration" placeholder="How long have you had this pain?">
+            </div>
+            <div class="form-group">
+                <label for="painType">Pain Type</label>
+                <select id="painType" name="painType">
+                    <option value="">Select pain type</option>
+                    <option value="sharp">Sharp</option>
+                    <option value="dull">Dull</option>
+                    <option value="aching">Aching</option>
+                    <option value="burning">Burning</option>
+                    <option value="throbbing">Throbbing</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="painScale">Pain Intensity (0 = No pain, 10 = Worst pain)</label>
+                <input type="range" id="painScale" name="painScale" min="0" max="10" step="1" oninput="painScaleValue.value = painScale.value">
+                <output id="painScaleValue">0</output>
+            </div>
+            <div class="form-group">
+                <label for="painFrequency">Pain Frequency</label>
+                <select id="painFrequency" name="painFrequency">
+                    <option value="">Select frequency</option>
+                    <option value="constant">Constant</option>
+                    <option value="intermittent">Intermittent</option>
+                    <option value="occasional">Occasional</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="painAggravating">Aggravating Factors</label>
+                <input type="text" id="painAggravating" name="painAggravating" placeholder="What makes the pain worse?">
+            </div>
+            <div class="form-group">
+                <label for="painRelieving">Relieving Factors</label>
+                <input type="text" id="painRelieving" name="painRelieving" placeholder="What makes the pain better?">
+            </div>
+            <div class="form-group">
+                <label for="functionalLimitations">Functional Limitations</label>
+                <textarea id="functionalLimitations" name="functionalLimitations" placeholder="Describe any difficulties with walking, standing, sitting, lifting, etc."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="previousTreatments">Previous Treatments</label>
+                <textarea id="previousTreatments" name="previousTreatments" placeholder="List any previous physiotherapy, surgeries, or other treatments"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="medications">Current Medications</label>
+                <textarea id="medications" name="medications" placeholder="List any medications you are currently taking"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="dailyImpact">Impact on Daily Activities</label>
+                <textarea id="dailyImpact" name="dailyImpact" placeholder="How does your condition affect your daily life?"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="mobilityAssessment">Mobility Assessment (select all that apply)</label>
+                <div>
+                    <input type="checkbox" id="mobilityWalking" name="mobilityAssessment" value="walking">
+                    <label for="mobilityWalking">Walking</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="mobilityStairs" name="mobilityAssessment" value="stairs">
+                    <label for="mobilityStairs">Stairs</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="mobilityBalance" name="mobilityAssessment" value="balance">
+                    <label for="mobilityBalance">Balance</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="mobilityTransfers" name="mobilityAssessment" value="transfers">
+                    <label for="mobilityTransfers">Transfers (e.g., bed to chair)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="mobilityOther" name="mobilityAssessment" value="other">
+                    <label for="mobilityOther">Other</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="physioGoals">Physiotherapy Goals</label>
+                <textarea id="physioGoals" name="physioGoals" placeholder="What do you hope to achieve with physiotherapy?"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="additionalNotes">Additional Notes</label>
+                <textarea id="additionalNotes" name="additionalNotes" placeholder="Any other relevant information"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="healthHistory">Health History</label>
+                <textarea id="healthHistory" name="healthHistory" placeholder="Describe pre-existing conditions, surgeries, previous injuries, etc."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="muscleMass">Muscle Mass (%)</label>
+                <input type="number" id="muscleMass" name="muscleMass" step="0.1" min="0" max="100">
+            </div>
+            
+            <div class="form-group">
+                <label for="goal" class="required">Goals</label>
+                <textarea id="goal" name="goal" placeholder="Describe the patient's objectives" required></textarea>
+            </div>
+            <style>
+    @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+        50% { transform: scale(1.05); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        100% { transform: scale(1); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    }
+    #bmiStatusDisplay {
+        animation: pulse 2s infinite;
+    }
+</style>
+<div id="bmiStatusDisplay" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000; max-width: 300px; text-align: center;"></div>
+            
+            <div class="form-group">
+                <label for="comments">Comments</label>
+                <textarea id="comments" name="comments" placeholder="Additional observations or feedback"></textarea>
+            </div>
+            
+            <button type="submit">Submit Assessment</button>
+        </form>
+    </div>
+    
+    <script>
+        // Calculate BMI when height and weight are entered
+        function getBmiStatus(bmi) {
+            if (bmi < 18.5) {
+                return {status: "Underweight - Let's work to strengthen your body!", color: "#3498db", icon: "⚠️"};
+            } else if (bmi < 25) {
+                return {status: "Healthy weight - Keep maintaining this balance!", color: "#2ecc71", icon: "✅"};
+            } else if (bmi < 30) {
+                return {status: "Overweight - Physiotherapy can help improve your body composition!", color: "#f1c40f", icon: "⚠️"};
+            } else if (bmi < 35) {
+                return {status: "Obesity Grade I - Together for a healthier life!", color: "#e67e22", icon: "⚠️"};
+            } else if (bmi < 40) {
+                return {status: "Obesity Grade II - Let's transform your health step by step!", color: "#e74c3c", icon: "⚠️"};
+            }
+            return {status: "Obesity Grade III - Every small change makes a difference!", color: "#c0392b", icon: "❌"};
+        }
+
+        function animateStatusBox(box) {
+            box.style.opacity = "0";
+            box.style.transform = "translateY(20px)";
+            setTimeout(function() {
+                box.style.opacity = "1";
+                box.style.transform = "translateY(0)";
+            }, 50);
+        }
+
+        function calculateBMI() {
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const bmiInput = document.getElementById('bmi');
+            const statusBox = document.getElementById('bmiStatusDisplay');
+            
+            if (height && weight) {
+                const bmi = weight / Math.pow(height / 100, 2);
+                bmiInput.value = bmi.toFixed(1);
+                
+                const statusObj = getBmiStatus(bmi);
+                statusBox.innerHTML = `<span style='font-size:1.5em;'>${statusObj.icon}</span> <strong>${statusObj.status}</strong> (BMI: ${bmi.toFixed(1)})`;
+                statusBox.style.display = "block";
+                statusBox.style.background = statusObj.color;
+                statusBox.style.color = "#fff";
+                statusBox.style.padding = "16px";
+                statusBox.style.borderRadius = "8px";
+                statusBox.style.marginTop = "8px";
+                statusBox.style.fontSize = "1.2em";
+                statusBox.style.boxShadow = "0 4px 16px rgba(0,0,0,0.08)";
+                statusBox.style.transition = "all 0.3s cubic-bezier(.68,-0.55,.27,1.55)";
+                animateStatusBox(statusBox);
+            } else {
+                bmiInput.value = '';
+                statusBox.style.display = "none";
+            }
+        }
+        
+        // Add event listeners to height and weight inputs
+        document.getElementById('height').addEventListener('input', calculateBMI);
+        document.getElementById('weight').addEventListener('input', calculateBMI);
+        
+        document.getElementById('assessmentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Configuration for sending the form via email using FormSubmit
+            const form = document.getElementById('assessmentForm');
+            
+            // Add action attribute to the form to use FormSubmit service with redirect
+            form.setAttribute('action', 'https://formsubmit.co/assessment@healthcenter.ae');
+            form.setAttribute('method', 'POST');
+            
+            // Add hidden fields for FormSubmit configuration
+            if (!document.querySelector('input[name="_next"]')) {
+                const nextField = document.createElement('input');
+                nextField.setAttribute('type', 'hidden');
+                nextField.setAttribute('name', '_next');
+                nextField.setAttribute('value', 'http://localhost:8002/thank_you.html');
+                form.appendChild(nextField);
+            }
+            
+            if (!document.querySelector('input[name="_subject"]')) {
+                const subjectField = document.createElement('input');
+                subjectField.setAttribute('type', 'hidden');
+                subjectField.setAttribute('name', '_subject');
+                subjectField.setAttribute('value', 'New Physiotherapy Assessment');
+                form.appendChild(subjectField);
+            }
+            
+            // Submit the form
+            
+            // Submit the form
+            form.submit();
+        });
+    </script>
+</body>
+</html>

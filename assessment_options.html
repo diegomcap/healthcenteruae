@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Options - Health & Pilates Center</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #3498db;
+        }
+        
+        .description {
+            color: #34495e;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+        
+        .options-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .option-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .option-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+        
+        .physio-card::before {
+            background-color: #3498db;
+        }
+        
+        .pilates-card::before {
+            background-color: #27ae60;
+        }
+        
+        .option-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .physio-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%233498db'%3E%3Ccircle cx='50' cy='15' r='7'/%3E%3Cpath d='M50 22v8'/%3E%3Cpath d='M50 30l-15 5v10'/%3E%3Cpath d='M50 30l15 5v10'/%3E%3Cpath d='M35 45l-5 20'/%3E%3Cpath d='M65 45l5 20'/%3E%3Cpath d='M30 65h40' stroke='%233498db' stroke-width='2'/%3E%3Cellipse cx='35' cy='50' rx='5' ry='3' fill='%233498db' opacity='0.7'/%3E%3Cellipse cx='65' cy='50' rx='5' ry='3' fill='%233498db' opacity='0.7'/%3E%3Cpath d='M40 75c0-5 20-5 20 0' stroke='%233498db' stroke-width='2' fill='none'/%3E%3Cpath d='M45 40c0 0 5 7 10 0' stroke='%233498db' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+        }
+        
+        .pilates-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%2327ae60'%3E%3Cdefs%3E%3ClinearGradient id='pilatesGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2327ae60;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23219653;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3C!-- Pilates Reformer Machine --%3E%3Crect x='10' y='65' width='80' height='10' rx='2' fill='url(%23pilatesGrad)' stroke='%23219653' stroke-width='1.5'/%3E%3Crect x='15' y='75' width='70' height='5' rx='1' fill='%23219653' opacity='0.7'/%3E%3Crect x='20' y='60' width='60' height='5' rx='1' fill='%23219653' opacity='0.5'/%3E%3Cline x1='25' y1='60' x2='25' y2='75' stroke='%23219653' stroke-width='1' stroke-dasharray='2,1'/%3E%3Cline x1='75' y1='60' x2='75' y2='75' stroke='%23219653' stroke-width='1' stroke-dasharray='2,1'/%3E%3C!-- Springs --%3E%3Cpath d='M20 67.5 C 15 67.5, 15 72.5, 20 72.5' stroke='%23219653' stroke-width='1' fill='none'/%3E%3Cpath d='M30 67.5 C 25 67.5, 25 72.5, 30 72.5' stroke='%23219653' stroke-width='1' fill='none'/%3E%3C!-- Student in Pilates Position --%3E%3Cellipse cx='50' cy='55' rx='15' ry='5' fill='url(%23pilatesGrad)' opacity='0.2'/%3E%3C!-- Head --%3E%3Ccircle cx='30' cy='55' r='5' fill='url(%23pilatesGrad)'/%3E%3C!-- Body --%3E%3Cpath d='M35 55 C 45 45, 65 45, 70 55' stroke='url(%23pilatesGrad)' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C!-- Arms --%3E%3Cpath d='M40 50 L 35 40' stroke='url(%23pilatesGrad)' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M60 50 L 65 40' stroke='url(%23pilatesGrad)' stroke-width='2' stroke-linecap='round'/%3E%3C!-- Legs --%3E%3Cpath d='M70 55 L 80 50' stroke='url(%23pilatesGrad)' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M70 55 L 75 60' stroke='url(%23pilatesGrad)' stroke-width='2.5' stroke-linecap='round'/%3E%3C!-- Instructor --%3E%3Ccircle cx='20' cy='30' r='5' fill='url(%23pilatesGrad)'/%3E%3Cpath d='M20 35 L 20 45' stroke='url(%23pilatesGrad)' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M20 38 L 15 45' stroke='url(%23pilatesGrad)' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M20 38 L 25 45' stroke='url(%23pilatesGrad)' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M20 45 L 18 55' stroke='url(%23pilatesGrad)' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M20 45 L 25 55' stroke='url(%23pilatesGrad)' stroke-width='2.5' stroke-linecap='round'/%3E%3C!-- Instructor Helping Hand --%3E%3Cpath d='M25 45 C 30 40, 35 40, 40 50' stroke='url(%23pilatesGrad)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C!-- Pilates Ball --%3E%3Ccircle cx='85' cy='30' r='8' fill='url(%23pilatesGrad)' opacity='0.6' stroke='%23219653' stroke-width='1'/%3E%3Cpath d='M81 26 C 85 22, 89 26, 85 30' stroke='%23ffffff' stroke-width='1' fill='none' opacity='0.7'/%3E%3C!-- Pilates Ring --%3E%3Ccircle cx='50' cy='25' r='10' stroke='url(%23pilatesGrad)' stroke-width='3' fill='none'/%3E%3Ccircle cx='50' cy='25' r='8' stroke='%23ffffff' stroke-width='0.5' fill='none' opacity='0.5'/%3E%3C!-- Movement Lines --%3E%3Cpath d='M60 20 C 65 18, 65 22, 60 20' stroke='%23219653' stroke-width='0.75' fill='none' opacity='0.8'/%3E%3Cpath d='M40 20 C 35 18, 35 22, 40 20' stroke='%23219653' stroke-width='0.75' fill='none' opacity='0.8'/%3E%3C/svg%3E");
+        }
+        }
+        
+        .option-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .option-description {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            z-index: -2;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            border-radius: 50px;
+            z-index: -1;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover::before {
+            width: 100%;
+        }
+        
+        .btn-physio {
+            background-color: #3498db;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-pilates {
+            background-color: #27ae60;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        .back-link:hover {
+            color: #2980b9;
+        }
+        
+        /* Floating elements animation */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .floating-elements li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            animation: float 25s linear infinite;
+            bottom: -150px;
+        }
+        
+        .floating-elements li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+            border-radius: 50%;
+        }
+        
+        .floating-elements li:nth-child(2) {
+            left: 10%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+            animation-duration: 12s;
+            border-radius: 50%;
+        }
+        
+        .floating-elements li:nth-child(3) {
+            left: 70%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 4s;
+            border-radius: 50%;
+        }
+        
+        .floating-elements li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+            border-radius: 50%;
+        }
+        
+        .floating-elements li:nth-child(5) {
+            left: 65%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 0s;
+            border-radius: 50%;
+        }
+        
+        .floating-elements li:nth-child(6) {
+            left: 75%;
+            width: 15px;
+            height: 15px;
+            animation-delay: 3s;
+            border-radius: 50%;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.2;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .options-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .option-card {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <ul class="floating-elements">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+    
+    <div class="container">
+        <h1>Choose Your Assessment</h1>
+        
+        <p class="description">
+            Select the type of assessment that best fits your needs. Our specialized forms will help us gather the right information to create a personalized plan for you.
+        </p>
+        
+        <div class="options-container">
+            <div class="option-card physio-card">
+                <video autoplay loop muted playsinline>
+                    <source src="https://assets.mixkit.co/videos/preview/mixkit-physiotherapist-treating-a-woman-in-a-clinic-13956-large.mp4" type="video/mp4">
+                </video>
+                <div class="option-icon physio-icon"></div>
+                <h2 class="option-title">Physiotherapy Assessment</h2>
+                <p class="option-description">
+                    For rehabilitation, pain management, and recovery from injuries. Our physiotherapy assessment will help us understand your condition and create a treatment plan.
+                </p>
+                <a href="physiotherapy_assessment_form.html" class="btn btn-physio">Start Physio Assessment</a>
+            </div>
+            
+            <div class="option-card pilates-card">
+                <video autoplay loop muted playsinline>
+                    <source src="https://assets.mixkit.co/videos/preview/mixkit-woman-doing-yoga-exercises-in-a-gym-40831-large.mp4" type="video/mp4">
+                </video>
+                <div class="option-icon pilates-icon"></div>
+                <h2 class="option-title">Pilates Assessment</h2>
+                <p class="option-description">
+                    For improving strength, flexibility, and overall fitness. Our pilates assessment will help us understand your goals and create a personalized training program.
+                </p>
+                <a href="pilates_assessment_form.html" class="btn btn-pilates">Start Pilates Assessment</a>
+            </div>
+        </div>
+        
+        <a href="index.html" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>

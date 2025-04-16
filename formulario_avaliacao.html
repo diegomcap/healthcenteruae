@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Avaliação Fisioterapêutica</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .col {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 200px;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        @media (max-width: 768px) {
+            .col {
+                flex: 100%;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Formulário de Avaliação Fisioterapêutica</h1>
+        
+        <form id="avaliacaoForm">
+            <!-- Dados Básicos -->
+            <h2>Dados Básicos</h2>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="nome" class="required">Nome</label>
+                        <input type="text" id="nome" name="nome" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="idade" class="required">Idade</label>
+                        <input type="number" id="idade" name="idade" min="1" max="120" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="altura" class="required">Altura (cm)</label>
+                        <input type="number" id="altura" name="altura" min="50" max="250" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="peso" class="required">Peso (kg)</label>
+                        <input type="number" id="peso" name="peso" step="0.1" min="1" max="300" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="imc">IMC (Índice de Massa Corporal)</label>
+                        <input type="text" id="imc" name="imc" readonly>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="statusImc">Health Status</label>
+                        <input type="text" id="statusImc" name="statusImc" readonly>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Avaliação Fisioterapêutica -->
+            <h2>Avaliação Fisioterapêutica</h2>
+            <div class="form-group">
+                <label for="condicaoFisica">Condição Física</label>
+                <select id="condicaoFisica" name="condicaoFisica">
+                    <option value="">Selecione uma opção</option>
+                    <option value="sedentario">Sedentário</option>
+                    <option value="pouco_ativo">Pouco Ativo</option>
+                    <option value="moderadamente_ativo">Moderadamente Ativo</option>
+                    <option value="muito_ativo">Muito Ativo</option>
+                    <option value="atleta">Atleta</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="diagnostico">Diagnóstico</label>
+                <input type="text" id="diagnostico" name="diagnostico">
+            </div>
+            
+            <div class="form-group">
+                <label for="historicoSaude">Histórico de Saúde</label>
+                <textarea id="historicoSaude" name="historicoSaude" placeholder="Descreva condições pré-existentes, cirurgias, lesões anteriores, etc."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="massaMuscular">Massa Muscular (%)</label>
+                <input type="number" id="massaMuscular" name="massaMuscular" step="0.1" min="0" max="100">
+            </div>
+            
+            <div class="form-group">
+                <label for="meta" class="required">Meta</label>
+                <textarea id="meta" name="meta" placeholder="Descreva os objetivos do aluno" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="comentarios">Comentários</label>
+                <textarea id="comentarios" name="comentarios" placeholder="Observações adicionais ou feedback"></textarea>
+            </div>
+            
+            <button type="submit">Enviar Avaliação</button>
+        </form>
+    </div>
+    
+    <script>
+        // Calcula o IMC quando altura e peso são preenchidos
+        function calcularIMC() {
+            const altura = parseFloat(document.getElementById('altura').value);
+            const peso = parseFloat(document.getElementById('peso').value);
+            
+            if (altura && peso) {
+                // Converte altura de cm para metros e calcula o IMC
+                const alturaEmMetros = altura / 100;
+                const imc = peso / (alturaEmMetros * alturaEmMetros);
+                
+                // Exibe o IMC com 1 casa decimal
+                document.getElementById('imc').value = imc.toFixed(1);
+                
+                // Determina o status do IMC com mensagens criativas em inglês
+                let status = '';
+                if (imc < 18.5) {
+                    status = "Underweight - Let's strengthen this body!";
+                } else if (imc < 25) {
+                    status = "Healthy weight - Keep it up, you're on the right track!";
+                } else if (imc < 30) {
+                    status = "Overweight - Small adjustments can make a big difference!";
+                } else if (imc < 35) {
+                    status = "Obesity Class I - Together for better health and well-being!";
+                } else if (imc < 40) {
+                    status = "Obesity Class II - Every step counts, let's transform!";
+                } else {
+                    status = "Obesity Class III - You have potential for great changes!";
+                }
+                
+                document.getElementById('statusImc').value = status;
+            }
+        }
+        
+        // Adiciona event listeners aos inputs de altura e peso
+        document.getElementById('altura').addEventListener('input', calcularIMC);
+        document.getElementById('peso').addEventListener('input', calcularIMC);
+        
+        document.getElementById('avaliacaoForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert('Formulário enviado com sucesso! Em uma implementação real, os dados seriam enviados para um servidor.');
+            // Aqui você adicionaria o código para enviar os dados para um backend
+        });
+    </script>
+</body>
+</html>

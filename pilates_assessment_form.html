@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilates Assessment Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+#bmiStatusDisplay {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 100;
+            max-width: 160px;
+            padding: 4px 8px;
+            font-size: 0.8em;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.98);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            backdrop-filter: blur(6px);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M 100 100 L 110 90 L 100 80 L 90 90 Z" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            z-index: -1;
+            opacity: 0.5;
+            animation: patternMove 20s linear infinite;
+        }
+
+        @keyframes patternMove {
+            from { background-position: 0 0; }
+            to { background-position: 100px 100px; }
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+            animation: fadeIn 0.8s ease-out;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 101;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            color: #27ae60;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #27ae60;
+            padding-bottom: 10px;
+            animation: slideIn 1s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            animation: fadeIn 1.2s ease-out;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            animation: fadeIn 1.4s ease-out;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: #27ae60;
+            outline: none;
+            box-shadow: 0 0 5px rgba(39, 174, 96, 0.5);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .col {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 200px;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        
+        .checkbox-group {
+            margin-top: 10px;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .checkbox-container label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+        
+        .radio-group {
+            margin-top: 10px;
+        }
+        
+        .radio-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .radio-container input[type="radio"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .radio-container label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.6);
+        }
+
+        .stress-slider {
+            width: 100%;
+            padding: 10px 0;
+        }
+
+        .stress-slider input[type="range"] {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #2ecc71, #f1c40f, #e74c3c);
+            outline: none;
+            transition: opacity 0.2s;
+        }
+
+        .stress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .energy-chart {
+            margin-top: 15px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        select {
+            margin-top: 10px;
+            background: white;
+            cursor: pointer;
+        }
+
+        select:hover {
+            border-color: #2ecc71;
+        }
+
+        .checkbox-group, .radio-group {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .checkbox-container, .radio-container {
+            transition: transform 0.2s;
+        }
+
+        .checkbox-container:hover, .radio-container:hover {
+            transform: translateX(5px);
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .col {
+                flex: 100%;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pilates Assessment Form</h1>
+        
+        <form id="pilatesAssessmentForm" method="POST" action="https://formsubmit.co/assessment@healthcenter.ae">
+            <!-- Basic Information -->
+            <h2>Personal Information</h2>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="name" class="required">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="email" class="required">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="phone" class="required">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="dob" class="required">Date of Birth</label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="height" class="required">Height (cm)</label>
+                        <input type="number" id="height" name="height" min="50" max="250" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="weight" class="required">Weight (kg)</label>
+                        <input type="number" id="weight" name="weight" step="0.1" min="1" max="300" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="bmi">BMI (Body Mass Index)</label>
+                        <input type="text" id="bmi" name="bmi" readonly>
+                    </div>
+                    <style>
+                        @keyframes pulse {
+                            0% { transform: scale(1); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+                            50% { transform: scale(1.05); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+                            100% { transform: scale(1); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+                        }
+                        #bmiStatusDisplay {
+                            animation: pulse 2s infinite;
+                        }
+                    </style>
+                    <div id="bmiStatusDisplay" style="display: none;"></div>
+                </div>
+            </div>
+             <style>
+                #bmiStatusDisplay {
+                    animation: pulse 2s infinite;
+                }
+                @keyframes pulse {
+                    0% { transform: scale(1); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+                    50% { transform: scale(1.05); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+                    100% { transform: scale(1); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+                }
+                .bmi-status:hover {
+                    transform: scale(1.02);
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+                }
+                .bmi-alert {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 1.1em;
+                    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+                    transition: all 0.3s ease;
+                    animation: pulse 2s infinite;
+                }
+                .bmi-icon {
+                    font-size: 3.5em;
+                    animation: bounce 2s infinite;
+                    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+                }
+                @keyframes bounce {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-10px); }
+                }
+                .bmi-content {
+                    flex-grow: 1;
+                }
+                .bmi-status-text {
+                    font-size: 1.6em;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+                    letter-spacing: 0.5px;
+                    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                }
+                .bmi-value {
+                    font-size: 1.2em;
+                    margin-bottom: 8px;
+                    font-weight: 500;
+                }
+                .bmi-message {
+                    font-size: 1.1em;
+                    line-height: 1.4;
+                }
+                @keyframes bounce {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.2); }
+                }
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes glow {
+                    0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); }
+                    50% { box-shadow: 0 0 30px rgba(255, 255, 255, 0.4); }
+                }
+                    50% { transform: scale(1.1); }
+                    100% { transform: scale(1); }
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            </style>
+            
+            <div class="form-group">
+                <label for="occupation">Occupation</label>
+                <input type="text" id="occupation" name="occupation">
+            </div>
+            
+            <!-- Health History -->
+            <h2>Health History</h2>
+            
+            <div class="form-group">
+                <label for="medicalConditions">Do you have any medical conditions?</label>
+                <textarea id="medicalConditions" name="medicalConditions" placeholder="Please list any medical conditions, including heart disease, high blood pressure, diabetes, etc."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="medications">Are you currently taking any medications?</label>
+                <textarea id="medications" name="medications" placeholder="Please list all medications you are currently taking"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Have you had any surgeries or injuries?</label>
+                <div class="radio-group">
+                    <div class="radio-container">
+                        <input type="radio" id="surgeries-yes" name="hadSurgeries" value="yes">
+                        <label for="surgeries-yes">Yes</label>
+                    </div>
+                    <div class="radio-container">
+                        <input type="radio" id="surgeries-no" name="hadSurgeries" value="no">
+                        <label for="surgeries-no">No</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="surgeryDetails">If yes, please provide details:</label>
+                <textarea id="surgeryDetails" name="surgeryDetails" placeholder="Include type of surgery/injury, date, and any ongoing effects"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Do you experience any pain?</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="pain-neck" name="painAreas" value="neck">
+                        <label for="pain-neck">Neck</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="pain-shoulders" name="painAreas" value="shoulders">
+                        <label for="pain-shoulders">Shoulders</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="pain-back" name="painAreas" value="back">
+                        <label for="pain-back">Back</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="pain-hips" name="painAreas" value="hips">
+                        <label for="pain-hips">Hips</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="pain-knees" name="painAreas" value="knees">
+                        <label for="pain-knees">Knees</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="pain-ankles" name="painAreas" value="ankles">
+                        <label for="pain-ankles">Ankles/Feet</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="pain-other" name="painAreas" value="other">
+                        <label for="pain-other">Other</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="painDetails">If you experience pain, please describe:</label>
+                <textarea id="painDetails" name="painDetails" placeholder="Describe the type of pain, intensity, frequency, and what activities trigger it"></textarea>
+            </div>
+            
+            <!-- Fitness Background -->
+            <h2>Fitness Background</h2>
+            
+            <div class="form-group">
+                <label for="activityLevel">Current Activity Level</label>
+                <select id="activityLevel" name="activityLevel">
+                    <option value="">Select an option</option>
+                    <option value="sedentary">Sedentary (little to no exercise)</option>
+                    <option value="light">Light (1-3 days per week)</option>
+                    <option value="moderate">Moderate (3-5 days per week)</option>
+                    <option value="active">Active (6-7 days per week)</option>
+                    <option value="veryActive">Very Active (twice daily)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="currentActivities">Current Physical Activities</label>
+                <textarea id="currentActivities" name="currentActivities" placeholder="List any sports, exercise routines, or physical activities you currently participate in"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Have you practiced Pilates before?</label>
+                <div class="radio-group">
+                    <div class="radio-container">
+                        <input type="radio" id="pilates-yes" name="pilatesExperience" value="yes">
+                        <label for="pilates-yes">Yes</label>
+                    </div>
+                    <div class="radio-container">
+                        <input type="radio" id="pilates-no" name="pilatesExperience" value="no">
+                        <label for="pilates-no">No</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="pilatesDetails">If yes, please provide details:</label>
+                <textarea id="pilatesDetails" name="pilatesDetails" placeholder="How long, what type (mat, reformer, etc.), frequency"></textarea>
+            </div>
+            
+            <!-- Pilates Goals -->
+            <h2>Pilates Goals</h2>
+            
+            <div class="form-group">
+                <label>What are your goals for Pilates? (Check all that apply)</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="goal-strength" name="pilatesGoals" value="strength">
+                        <label for="goal-strength">Increase strength</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="goal-flexibility" name="pilatesGoals" value="flexibility">
+                        <label for="goal-flexibility">Improve flexibility</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="goal-posture" name="pilatesGoals" value="posture">
+                        <label for="goal-posture">Better posture</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="goal-balance" name="pilatesGoals" value="balance">
+                        <label for="goal-balance">Enhance balance and coordination</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="goal-core" name="pilatesGoals" value="core">
+                        <label for="goal-core">Strengthen core</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="goal-rehab" name="pilatesGoals" value="rehab">
+                        <label for="goal-rehab">Rehabilitation from injury</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="goal-stress" name="pilatesGoals" value="stress">
+                        <label for="goal-stress">Stress reduction</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="goal-other" name="pilatesGoals" value="other">
+                        <label for="goal-other">Other</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="specificGoals" class="required">Please describe your specific goals:</label>
+                <textarea id="specificGoals" name="specificGoals" placeholder="What do you hope to achieve through Pilates?" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="preferredSchedule">Preferred Schedule</label>
+                <select id="preferredSchedule" name="preferredSchedule">
+                    <option value="">Select an option</option>
+                    <option value="weekdayMorning">Weekday Mornings</option>
+                    <option value="weekdayAfternoon">Weekday Afternoons</option>
+                    <option value="weekdayEvening">Weekday Evenings</option>
+                    <option value="weekendMorning">Weekend Mornings</option>
+                    <option value="weekendAfternoon">Weekend Afternoons</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="sessionFrequency">How many sessions per week would you like?</label>
+                <select id="sessionFrequency" name="sessionFrequency">
+                    <option value="">Select an option</option>
+                    <option value="1">1 session per week</option>
+                    <option value="2">2 sessions per week</option>
+                    <option value="3">3 sessions per week</option>
+                    <option value="4+">4 or more sessions per week</option>
+                </select>
+            </div>
+            
+            <h2>Lifestyle & Health Assessment</h2>
+            <div class="form-group">
+                <label>Daily Activity Level</label>
+                <div class="radio-group">
+                    <div class="radio-container">
+                        <input type="radio" id="sedentary" name="activityLevel" value="sedentary">
+                        <label for="sedentary">Sedentary (Little to no exercise)</label>
+                    </div>
+                    <div class="radio-container">
+                        <input type="radio" id="light" name="activityLevel" value="light">
+                        <label for="light">Light (Exercise 1-3 times/week)</label>
+                    </div>
+                    <div class="radio-container">
+                        <input type="radio" id="moderate" name="activityLevel" value="moderate">
+                        <label for="moderate">Moderate (Exercise 3-5 times/week)</label>
+                    </div>
+                    <div class="radio-container">
+                        <input type="radio" id="active" name="activityLevel" value="active">
+                        <label for="active">Very Active (Exercise 6-7 times/week)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Stress Level</label>
+                <div class="stress-slider">
+                    <input type="range" id="stressLevel" name="stressLevel" min="1" max="10" value="5">
+                    <div class="stress-labels">
+                        <span>Low</span>
+                        <span>Medium</span>
+                        <span>High</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Sleep Quality</label>
+                <select id="sleepQuality" name="sleepQuality" required>
+                    <option value="">Select your typical sleep quality</option>
+                    <option value="excellent">Excellent (7-9 hours, wake up refreshed)</option>
+                    <option value="good">Good (6-7 hours, generally rested)</option>
+                    <option value="fair">Fair (5-6 hours, sometimes tired)</option>
+                    <option value="poor">Poor (Less than 5 hours or irregular)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Nutrition Habits</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="regularMeals" name="nutritionHabits[]" value="regularMeals">
+                        <label for="regularMeals">Regular meal schedule</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="balancedDiet" name="nutritionHabits[]" value="balancedDiet">
+                        <label for="balancedDiet">Balanced diet with proteins and vegetables</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="waterIntake" name="nutritionHabits[]" value="waterIntake">
+                        <label for="waterIntake">Adequate water intake (8+ glasses/day)</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="supplements" name="nutritionHabits[]" value="supplements">
+                        <label for="supplements">Take supplements/vitamins</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Energy Levels Throughout the Day</label>
+                <div class="energy-chart">
+                    <canvas id="energyChart"></canvas>
+                    <select id="energyPattern" name="energyPattern" required>
+                        <option value="">Select your typical energy pattern</option>
+                        <option value="consistent">Consistent energy throughout the day</option>
+                        <option value="morningPerson">Highest energy in the morning</option>
+                        <option value="afternoonDip">Afternoon energy dip</option>
+                        <option value="eveningPerson">More energetic in the evening</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="additionalInfo">Additional Information</label>
+                <textarea id="additionalInfo" name="additionalInfo" placeholder="Share any other relevant information about your lifestyle, health goals, or concerns..."></textarea>
+            </div>
+            
+            <button type="submit">Submit Assessment</button>
+            <a href="assessment_options.html" class="back-link">← Back to Assessment Options</a>
+        </form>
+    </div>
+    
+    <script>
+        // Initialize Energy Chart
+        const ctx = document.getElementById('energyChart');
+        let energyChart;
+
+        document.getElementById('energyPattern').addEventListener('change', function(e) {
+            const pattern = e.target.value;
+            const data = getEnergyData(pattern);
+            updateEnergyChart(data);
+        });
+
+        function getEnergyData(pattern) {
+            const patterns = {
+                'consistent': [7, 7, 7, 7, 7, 7],
+                'morningPerson': [9, 8, 7, 6, 5, 4],
+                'afternoonDip': [7, 8, 4, 6, 7, 6],
+                'eveningPerson': [4, 5, 6, 7, 8, 9]
+            };
+            return patterns[pattern] || Array(6).fill(5);
+        }
+
+        function updateEnergyChart(data) {
+            if (energyChart) {
+                energyChart.destroy();
+            }
+
+            energyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Morning', 'Mid-Morning', 'Noon', 'Afternoon', 'Evening', 'Night'],
+                    datasets: [{
+                        label: 'Energy Level',
+                        data: data,
+                        borderColor: '#2ecc71',
+                        backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function getBmiStatus(bmi) {
+            if (bmi < 18.5) {
+                return {status: "Underweight - Let's build core strength safely!", color: "#3498db", icon: "⚠️"};
+            } else if (bmi < 25) {
+                return {status: "Healthy weight - Perfect for Pilates progression!", color: "#2ecc71", icon: "✅"};
+            } else if (bmi < 30) {
+                return {status: "Overweight - Pilates can improve body composition!", color: "#f1c40f", icon: "⚠️"};
+            } else if (bmi < 35) {
+                return {status: "Obesity Grade I - Let's focus on gentle movements!", color: "#e67e22", icon: "⚠️"};
+            } else if (bmi < 40) {
+                return {status: "Obesity Grade II - Modified exercises available!", color: "#e74c3c", icon: "⚠️"};
+            }
+            return {status: "Obesity Grade III - Consult physician before starting!", color: "#c0392b", icon: "❌"};
+        }
+
+        function animateStatusBox(box) {
+            box.style.opacity = "0";
+            box.style.transform = "translateY(20px)";
+            setTimeout(function() {
+                box.style.opacity = "1";
+                box.style.transform = "translateY(0)";
+            }, 50);
+        }
+
+        function calculateBMI() {
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const bmiInput = document.getElementById('bmi');
+            const statusBox = document.getElementById('bmiStatusDisplay');
+            
+            if (height && weight) {
+                const bmi = weight / Math.pow(height / 100, 2);
+                bmiInput.value = bmi.toFixed(1);
+                
+                const statusObj = getBmiStatus(bmi);
+                statusBox.innerHTML = `<span style='font-size:1.5em;'>${statusObj.icon}</span> <strong>${statusObj.status}</strong> (BMI: ${bmi.toFixed(1)})`;
+                statusBox.style.display = "block";
+                statusBox.style.background = statusObj.color;
+                statusBox.style.color = "#fff";
+                statusBox.style.padding = "16px";
+                statusBox.style.borderRadius = "8px";
+                statusBox.style.marginTop = "8px";
+                statusBox.style.fontSize = "1.2em";
+                statusBox.style.boxShadow = "0 4px 16px rgba(0,0,0,0.08)";
+                statusBox.style.transition = "all 0.3s cubic-bezier(.68,-0.55,.27,1.55)";
+                animateStatusBox(statusBox);
+            } else {
+                bmiInput.value = '';
+                statusBox.style.display = 'none';
+            }
+        }
+        
+        function calculateBMI() {
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const bmiInput = document.getElementById('bmi');
+            const statusBox = document.getElementById('bmiStatusDisplay');
+            
+            if (height && weight) {
+                const bmi = weight / Math.pow(height / 100, 2);
+                bmiInput.value = bmi.toFixed(1);
+                
+                const statusObj = getBmiStatus(bmi);
+                statusBox.innerHTML = `<span style='font-size:1.2em;'>${statusObj.icon}</span> <strong>${statusObj.status}</strong> (BMI: ${bmi.toFixed(1)})`;
+                statusBox.style.display = "block";
+                statusBox.style.background = statusObj.color;
+                statusBox.style.color = "#fff";
+                statusBox.style.padding = "8px";
+                statusBox.style.borderRadius = "6px";
+                statusBox.style.marginTop = "4px";
+                statusBox.style.fontSize = "0.9em";
+                statusBox.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
+                statusBox.style.transition = "all 0.3s cubic-bezier(.68,-0.55,.27,1.55)";
+                animateStatusBox(statusBox);
+            } else {
+                bmiInput.value = '';
+                statusBox.style.display = 'none';
+            }
+        }
+        
+        // Add event listeners to height and weight inputs
+        document.getElementById('height').addEventListener('input', calculateBMI);
+        document.getElementById('weight').addEventListener('input', calculateBMI);
+        
+        document.getElementById('pilatesAssessmentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Configuration for sending the form via email using FormSubmit
+            const form = document.getElementById('pilatesAssessmentForm');
+            
+            // Add action attribute to the form to use FormSubmit service with redirect
+            form.setAttribute('action', 'https://formsubmit.co/assessment@healthcenter.ae');
+            form.setAttribute('method', 'POST');
+            
+            // Add hidden fields for FormSubmit configuration
+            if (!document.querySelector('input[name="_next"]')) {
+                const nextField = document.createElement('input');
+                nextField.setAttribute('type', 'hidden');
+                nextField.setAttribute('name', '_next');
+                nextField.setAttribute('value', 'http://localhost:8002/thank_you.html');
+                form.appendChild(nextField);
+            }
+            
+            if (!document.querySelector('input[name="_subject"]')) {
+                const subjectField = document.createElement('input');
+                subjectField.setAttribute('type', 'hidden');
+                subjectField.setAttribute('name', '_subject');
+                subjectField.setAttribute('value', 'New Pilates Assessment');
+                form.appendChild(subjectField);
+            }
+            
+            // Submit the form
+            form.submit();
+        });
+    </script>
+</body>
+</html>

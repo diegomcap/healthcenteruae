@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Health & Pilates Center</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            margin-top: 10px;
+            display: none;
+        }
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .floating-elements li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 25s linear infinite;
+            bottom: -150px;
+            border-radius: 50%;
+        }
+
+        .floating-elements li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+        }
+
+        .floating-elements li:nth-child(2) {
+            left: 10%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+            animation-duration: 12s;
+        }
+
+        .floating-elements li:nth-child(3) {
+            left: 70%;
+            width: 40px;
+            height: 40px;
+            animation-delay: 4s;
+        }
+
+        .floating-elements li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+        }
+
+        .floating-elements li:nth-child(5) {
+            left: 65%;
+            width: 30px;
+            height: 30px;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </div>
+    <div class="container">
+        <h1>Access Portal</h1>
+        <form id="loginForm" onsubmit="return validateAccess(event)">
+            <div class="form-group">
+                <input type="password" id="accessKey" placeholder="Enter access key" required>
+            </div>
+            <button type="submit">Access System</button>
+            <p id="errorMessage" class="error-message">Invalid access key. Please try again.</p>
+        </form>
+    </div>
+
+    <script>
+        // Get valid keys, generated keys, and used keys from localStorage
+        const validKeys = JSON.parse(localStorage.getItem('validKeys')) || [];
+        const generatedKeys = JSON.parse(localStorage.getItem('generatedKeys')) || [];
+        const usedKeys = JSON.parse(localStorage.getItem('usedKeys')) || [];
+        const adminKey = 'ADMIN2024';
+
+        function validateAccess(event) {
+            event.preventDefault();
+            const accessKey = document.getElementById('accessKey').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Check if key has already been used
+            if (usedKeys.includes(accessKey)) {
+                window.location.href = 'already_used.html';
+                return false;
+            }
+
+            // Check both default and generated keys
+            if (validKeys.includes(accessKey) || generatedKeys.includes(accessKey)) {
+                // Mark key as used
+                usedKeys.push(accessKey);
+                localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
+                // Regular access
+                window.location.href = 'index.html';
+                return true;
+            } else if (accessKey === adminKey) {
+                // Admin access with security check
+                const currentTime = new Date().getTime();
+                sessionStorage.setItem('adminAccessTime', currentTime);
+                window.location.href = '123dsaw3.html';
+                return true;
+            } else {
+                errorMessage.style.display = 'block';
+                return false;
+            }
+        }
+    </script>
+</body>
+</html>

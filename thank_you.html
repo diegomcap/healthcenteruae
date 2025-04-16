@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - Health & Pilates Center</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+            animation: float 15s infinite;
+            border-radius: 50%;
+        }
+
+        .floating-element:nth-child(1) { left: 10%; width: 80px; height: 80px; animation-delay: 0s; }
+        .floating-element:nth-child(2) { left: 30%; width: 60px; height: 60px; animation-delay: 2s; }
+        .floating-element:nth-child(3) { left: 50%; width: 100px; height: 100px; animation-delay: 4s; }
+        .floating-element:nth-child(4) { left: 70%; width: 50px; height: 50px; animation-delay: 6s; }
+        .floating-element:nth-child(5) { left: 90%; width: 70px; height: 70px; animation-delay: 8s; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .success-icon {
+            color: #2ecc71;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            color: #34495e;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .email-highlight {
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        .home-link {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .home-link:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">✓</div>
+        <h1>Thank You for Your Assessment</h1>
+        <p>We have successfully received your assessment form. Our team of healthcare professionals will carefully review your information and get back to you shortly.</p>
+        <p>A confirmation email will be sent to you from <span class="email-highlight">assessment@healthcenter.ae</span></p>
+        <p>If you have any immediate concerns, please don't hesitate to contact us directly.</p>
+        <a href="login.html" class="home-link">Return to Home</a>
+        <svg class="uae-flag" viewBox="0 0 900 600" style="width: 60px; height: 40px; margin: 20px auto 0; display: block;">
+            <rect width="900" height="200" fill="#00732f"/>
+            <rect y="200" width="900" height="200" fill="#ffffff"/>
+            <rect y="400" width="900" height="200" fill="black"/>
+            <rect width="300" height="600" fill="#ff0000"/>
+        </svg>
+    </div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+</body>
+</html>
