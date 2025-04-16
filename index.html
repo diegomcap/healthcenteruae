@@ -361,18 +361,24 @@ age add UAE            width: 100px;
             
             if (!currentKey || !validKeys.includes(currentKey) || usedKeys.includes(currentKey)) {
                 window.location.href = 'login.html';
+                return false;
             }
+            return true;
         }
         
         // Run authentication check when page loads
-        checkAuthentication();
+        if (checkAuthentication()) {
+            window.location.href = 'assessment_options.html';
+        }
 
         // Add click event listener to the Access Portal button
         document.addEventListener('DOMContentLoaded', function() {
             const accessButton = document.querySelector('.btn');
             accessButton.addEventListener('click', function(e) {
                 e.preventDefault();
-                window.location.href = 'assessment_options.html';
+                if (checkAuthentication()) {
+                    window.location.href = 'assessment_options.html';
+                }
             });
         });
     </script>
