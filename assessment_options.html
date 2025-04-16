@@ -324,6 +324,21 @@
     </style>
 </head>
 <body>
+    <script>
+        // Check if user is authenticated
+        function checkAuthentication() {
+            const validKeys = JSON.parse(localStorage.getItem('validKeys')) || [];
+            const usedKeys = JSON.parse(localStorage.getItem('usedKeys')) || [];
+            const currentKey = localStorage.getItem('currentKey');
+            
+            if (!currentKey || !validKeys.includes(currentKey) || usedKeys.includes(currentKey)) {
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // Run authentication check when page loads
+        checkAuthentication();
+    </script>
     <ul class="floating-elements">
         <li></li>
         <li></li>
