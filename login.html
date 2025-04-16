@@ -196,9 +196,8 @@
     </div>
 
     <script>
-        // Get valid keys, generated keys, and used keys from localStorage
-        const validKeys = JSON.parse(localStorage.getItem('validKeys')) || [];
-        const generatedKeys = JSON.parse(localStorage.getItem('generatedKeys')) || [];
+        // Get valid keys and used keys from localStorage
+        const validKeys = JSON.parse(localStorage.getItem('validKeys')) || ['HEALTH2024', 'PILATES2024'];
         const usedKeys = JSON.parse(localStorage.getItem('usedKeys')) || [];
         const adminKey = 'ADMIN2024';
 
@@ -206,15 +205,25 @@
             event.preventDefault();
             const accessKey = document.getElementById('accessKey').value;
             const errorMessage = document.getElementById('errorMessage');
+            
+            // Carregar chaves válidas do localStorage
+            const validKeys = JSON.parse(localStorage.getItem('validKeys')) || ['HEALTH2024', 'PILATES2024'];
+
+            // Log access attempt
+            console.log('Tentativa de acesso com chave:', accessKey);
 
             // Check if key has already been used
             if (usedKeys.includes(accessKey)) {
+                console.log('Chave já utilizada');
                 window.location.href = 'already_used.html';
                 return false;
             }
 
-            // Check both default and generated keys
-            if (validKeys.includes(accessKey) || generatedKeys.includes(accessKey)) {
+            // Check valid keys
+            if (validKeys.includes(accessKey)) {
+                console.log('Acesso autorizado com chave válida');
+                // Store current key for session
+                localStorage.setItem('currentKey', accessKey);
                 // Mark key as used
                 usedKeys.push(accessKey);
                 localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
@@ -222,12 +231,14 @@
                 window.location.href = 'index.html';
                 return true;
             } else if (accessKey === adminKey) {
+                console.log('Acesso administrativo autorizado');
                 // Admin access with security check
                 const currentTime = new Date().getTime();
                 sessionStorage.setItem('adminAccessTime', currentTime);
                 window.location.href = '123dsaw3.html';
                 return true;
             } else {
+                console.log('Acesso negado - chave inválida');
                 errorMessage.style.display = 'block';
                 return false;
             }

@@ -122,13 +122,19 @@
     </div>
 
     <script>
-        // Initialize valid keys from localStorage or default values
+        // Initialize valid keys from localStorage
         let validKeys = JSON.parse(localStorage.getItem('validKeys')) || ['HEALTH2024', 'PILATES2024'];
         const adminKey = 'ADMIN2024';
 
         // Save keys to localStorage
         function saveKeys() {
             localStorage.setItem('validKeys', JSON.stringify(validKeys));
+        }
+
+        // Load keys on page load
+        window.onload = function() {
+            displayKeys();
+            saveKeys();
         }
 
         // Display current keys
@@ -149,13 +155,17 @@
         // Generate new access key
         function generateNewKey() {
             const prefix = ['HEALTH', 'PILATES', 'WELLNESS'];
+            const randomPrefix = prefix[Math.floor(Math.random() * prefix.length)];
             const year = new Date().getFullYear();
-            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-            const newKey = `${prefix[Math.floor(Math.random() * prefix.length)]}${year}${random}`;
+            const randomNum = Math.floor(Math.random() * 1000);
+            const newKey = `${randomPrefix}${year}_${randomNum}`;
+            validKeys.push(newKey);
+            saveKeys();
+            console.log('Nova chave gerada:', newKey);
             
-            const generatedKeyDiv = document.getElementById('generatedKey');
-            generatedKeyDiv.style.display = 'block';
-            generatedKeyDiv.innerHTML = `New Key: ${newKey} <button onclick="addKey('${newKey}')">Add to Valid Keys</button>`;
+            const generatedKeyElement = document.getElementById('generatedKey');
+            generatedKeyElement.textContent = `New Key Generated: ${newKey}`;
+            displayKeys();
         }
 
         // Add new key to valid keys
