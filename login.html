@@ -218,8 +218,8 @@
                 // Mark key as used
                 usedKeys.push(accessKey);
                 localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
-                // Regular access
-                window.location.href = 'index.html';
+                // Regular access - redirect to assessment options
+                window.location.href = 'assessment_options.html';
                 return true;
             } else if (accessKey === adminKey) {
                 // Admin access with security check
