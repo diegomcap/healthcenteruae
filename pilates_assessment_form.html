@@ -289,12 +289,39 @@
             }
         }
     </style>
+    <script>
+        async function validateForm(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            try {
+                // Envio por email usando FormSubmit
+                await fetch('https://formsubmit.co/assessment@healthcenter.ae', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                });
+
+                // Salvar localmente também
+                localStorage.setItem('formData', JSON.stringify(Object.fromEntries(formData)));
+                
+                window.location.href = 'thank_you.html';
+            } catch (error) {
+                console.error('Erro ao enviar formulário:', error);
+                alert('Ocorreu um erro ao enviar o formulário. Por favor, tente novamente.');
+            }
+            return false;
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Pilates Assessment Form</h1>
-        
-        <form id="pilatesAssessmentForm" method="POST" action="https://formsubmit.co/assessment@healthcenter.ae">
+        <form id="pilatesAssessmentForm" action="https://formsubmit.co/assessment@healthcenter.ae" method="POST" onsubmit="return validateForm(event)">
             <!-- Basic Information -->
             <h2>Personal Information</h2>
             <div class="row">
@@ -424,9 +451,6 @@
                 @keyframes glow {
                     0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); }
                     50% { box-shadow: 0 0 30px rgba(255, 255, 255, 0.4); }
-                }
-                    50% { transform: scale(1.1); }
-                    100% { transform: scale(1); }
                 }
                 @keyframes fadeIn {
                     from { opacity: 0; transform: translateY(20px); }

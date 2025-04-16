@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health & Pilates Center</title>
+    <title>Health & Pilates Center - Assessment</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -254,15 +258,62 @@
     </div>
 
     <script>
-        // Check if user has valid access key
+        // Firebase Configuration (Replace with your actual config - MUST BE SAME AS admin.html & login.html)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const keysRef = database.ref('validKeys');
+
+        // Check access key on page load
         window.onload = function() {
+            checkAccess();
+        };
+
+        function checkAccess() {
             const currentKey = localStorage.getItem('currentKey');
-            const validKeys = JSON.parse(localStorage.getItem('validKeys')) || [];
-            
+            const emailSent = localStorage.getItem('emailSent');
+
+            if (!currentKey) {
+                console.log('Nenhuma chave atual encontrada no localStorage. Redirecionando para login.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Verify the current key against Firebase
+            keysRef.child(currentKey).once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log('Chave atual válida encontrada no Firebase. Acesso permitido.');
+                    // Key is valid, allow access
+                } else {
+                    console.log('Chave atual inválida ou não encontrada no Firebase. Redirecionando para login.');
+                    // Key is not valid in Firebase, clear it from local storage and redirect
+                    localStorage.removeItem('currentKey');
+                    window.location.href = 'login.html';
+                }
+            }).catch((error) => {
+                console.error("Erro ao verificar chave no Firebase: ", error);
+                alert("Erro ao verificar acesso. Tente novamente mais tarde.");
+                // Optionally redirect to login on error as well
+                window.location.href = 'login.html';
+            });
+
+            /* Old localStorage check:
             if (!currentKey || !validKeys.includes(currentKey)) {
                 window.location.href = 'login.html';
             }
+            */
         }
+
     </script>
 </body>
 </html>

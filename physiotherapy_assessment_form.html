@@ -108,12 +108,31 @@
             }
         }
     </style>
+    <script>
+        async function validateForm(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            try {
+                await fetch('https://formsubmit.co/assessment@healthcenter.ae', {
+                    method: 'POST',
+                    body: formData
+                });
+                window.location.href = 'thank_you.html';
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('An error occurred while submitting the form. Please try again.');
+            }
+            return false;
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Physiotherapy Assessment Form</h1>
         
-        <form id="assessmentForm" method="POST" action="https://formsubmit.co/assessment@healthcenter.ae">
+        <form id="assessmentForm" action="thank_you.html" method="POST" onsubmit="return validateForm(event)">
             <!-- Basic Data -->
             <h2>Basic Information</h2>
             <div class="row">
@@ -380,7 +399,7 @@
                 const nextField = document.createElement('input');
                 nextField.setAttribute('type', 'hidden');
                 nextField.setAttribute('name', '_next');
-                nextField.setAttribute('value', 'http://localhost:8002/thank_you.html');
+                nextField.setAttribute('value', 'http://localhost:3000/thank_you.html');
                 form.appendChild(nextField);
             }
             

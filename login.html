@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Health & Pilates Center</title>
+    <title>Access Portal - Health & Pilates Center</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -196,52 +199,42 @@
     </div>
 
     <script>
-        // Get valid keys and used keys from localStorage
-        const validKeys = JSON.parse(localStorage.getItem('validKeys')) || ['HEALTH2024', 'PILATES2024'];
-        const usedKeys = JSON.parse(localStorage.getItem('usedKeys')) || [];
-        const adminKey = 'ADMIN2024';
-
-        function validateAccess(event) {
+        async function validateAccess(event) {
             event.preventDefault();
             const accessKey = document.getElementById('accessKey').value;
             const errorMessage = document.getElementById('errorMessage');
-            
-            // Carregar chaves válidas do localStorage
-            const validKeys = JSON.parse(localStorage.getItem('validKeys')) || ['HEALTH2024', 'PILATES2024'];
 
-            // Log access attempt
-            console.log('Tentativa de acesso com chave:', accessKey);
+            try {
+                // Buscar chaves válidas do servidor
+                const response = await fetch('/keys');
+                if (!response.ok) {
+                    throw new Error('Erro ao validar chave de acesso');
+                }
+                const data = await response.json();
 
-            // Check if key has already been used
-            if (usedKeys.includes(accessKey)) {
-                console.log('Chave já utilizada');
-                window.location.href = 'already_used.html';
-                return false;
-            }
+                // Check if it's an admin key
+                if (accessKey === data.adminKey) {
+                    window.location.href = 'admin.html';
+                    return false;
+                }
 
-            // Check valid keys
-            if (validKeys.includes(accessKey)) {
-                console.log('Acesso autorizado com chave válida');
-                // Store current key for session
-                localStorage.setItem('currentKey', accessKey);
-                // Mark key as used
-                usedKeys.push(accessKey);
-                localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
-                // Regular access - redirect to index page
-                window.location.href = 'index.html';
-                return true;
-            } else if (accessKey === adminKey) {
-                console.log('Acesso administrativo autorizado');
-                // Admin access with security check
-                const currentTime = new Date().getTime();
-                sessionStorage.setItem('adminAccessTime', currentTime);
-                window.location.href = '123dsaw3.html';
-                return true;
-            } else {
-                console.log('Acesso negado - chave inválida');
+                // Validate access key
+                if (data.validKeys.includes(accessKey)) {
+                    // Redirect to index page first
+                    window.location.href = 'index.html';
+                } else {
+                    errorMessage.textContent = 'Chave de acesso inválida. Por favor, tente novamente.';
+                    errorMessage.style.display = 'block';
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000);
+                }
+            } catch (error) {
+                console.error('Erro na validação:', error);
+                errorMessage.textContent = 'Erro ao validar chave. Por favor, tente novamente mais tarde.';
                 errorMessage.style.display = 'block';
-                return false;
             }
+            return false;
         }
     </script>
 </body>

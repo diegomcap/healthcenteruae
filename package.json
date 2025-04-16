@@ -1,0 +1,12 @@
+{
+    "name": "health-pilates-access-system",
+    "version": "1.0.0",
+    "description": "Sistema local de gerenciamento de chaves de acesso",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2"
+    }
+}
