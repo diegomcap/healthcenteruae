@@ -366,6 +366,15 @@ age add UAE            width: 100px;
         
         // Run authentication check when page loads
         checkAuthentication();
+
+        // Add click event listener to the Access Portal button
+        document.addEventListener('DOMContentLoaded', function() {
+            const accessButton = document.querySelector('.btn');
+            accessButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'assessment_options.html';
+            });
+        });
     </script>
     <ul class="circles">
         <li></li>
@@ -400,11 +409,6 @@ age add UAE            width: 100px;
             <a href="login.html" class="btn">Access Portal</a>
         </div>
     </div>
-    <script>
-        // Automatically redirect to assessment options
-        window.onload = function() {
-            window.location.href = 'assessment_options.html';
-        }
-    </script>
+
 </body>
 </html>
