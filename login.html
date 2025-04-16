@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Access Portal - Health & Pilates Center</title>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <!-- Local Storage Implementation -->
     <style>
         * {
             box-sizing: border-box;
@@ -204,22 +202,29 @@
             const accessKey = document.getElementById('accessKey').value;
             const errorMessage = document.getElementById('errorMessage');
 
+            // Verificar se a chave já foi utilizada
+            const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
+            if (usedKeys.includes(accessKey)) {
+                window.location.href = 'already_used.html';
+                return false;
+            }
+
             try {
-                // Buscar chaves válidas do servidor
-                const response = await fetch('/keys');
-                if (!response.ok) {
-                    throw new Error('Erro ao validar chave de acesso');
-                }
-                const data = await response.json();
+                // Chaves válidas definidas localmente
+                const validKeys = ['DEMO123', 'TEST456', 'PILOT789'];
+                const adminKey = 'ADMIN999';
 
                 // Check if it's an admin key
-                if (accessKey === data.adminKey) {
-                    window.location.href = 'admin.html';
+                if (accessKey === adminKey) {
+                    window.location.href = '#@4adm1@.html';
                     return false;
                 }
 
                 // Validate access key
-                if (data.validKeys.includes(accessKey)) {
+                if (validKeys.includes(accessKey)) {
+                    // Marcar a chave como utilizada
+                    usedKeys.push(accessKey);
+                    localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
                     // Redirect to index page first
                     window.location.href = 'index.html';
                 } else {
