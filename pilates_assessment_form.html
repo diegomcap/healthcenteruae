@@ -290,9 +290,19 @@
         }
     </style>
     <script>
-        document.getElementById('assessmentForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            window.location.href = 'thank_you.html';
+        // Atualiza o assunto do email com o nome do cliente quando o usuário digita
+        document.getElementById('name').addEventListener('input', function() {
+            const clientName = document.getElementById('name').value;
+            document.getElementById('emailSubject').value = `New Pilates Assessment - ${clientName}`;
+        });
+        
+        document.getElementById('assessmentForm').addEventListener('submit', function(event) {
+            // Garante que o assunto tenha o nome do cliente antes de enviar
+            const clientName = document.getElementById('name').value;
+            document.getElementById('emailSubject').value = `New Pilates Assessment - ${clientName}`;
+            
+            // Validação do formulário pode ser adicionada aqui se necessário
+            return true;
         });
     </script>
 </head>
@@ -300,6 +310,10 @@
     <div class="container">
         <h1>Pilates Assessment Form</h1>
         <form id="assessmentForm" action="https://formsubmit.co/assessment@healthcenter.ae" method="POST" onsubmit="return validateForm(event)">
+            <input type="hidden" name="_next" value="http://localhost:3000/thank_you.html">
+            <input type="hidden" name="_subject" value="New Pilates Assessment - " id="emailSubject">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_autoresponse" value="Thank you for submitting your assessment form. We have received it and will review it shortly.">
             <!-- Basic Information -->
             <h2>Personal Information</h2>
             <div class="row">
@@ -860,36 +874,25 @@
         document.getElementById('height').addEventListener('input', calculateBMI);
         document.getElementById('weight').addEventListener('input', calculateBMI);
         
-        document.getElementById('pilatesAssessmentForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            // Configuration for sending the form via email using FormSubmit
-            const form = document.getElementById('pilatesAssessmentForm');
-            
-            // Add action attribute to the form to use FormSubmit service with redirect
-            form.setAttribute('action', 'https://formsubmit.co/assessment@healthcenter.ae');
-            form.setAttribute('method', 'POST');
-            
-            // Add hidden fields for FormSubmit configuration
-            if (!document.querySelector('input[name="_next"]')) {
-                const nextField = document.createElement('input');
-                nextField.setAttribute('type', 'hidden');
-                nextField.setAttribute('name', '_next');
-                nextField.setAttribute('value', 'http://localhost:8002/thank_you.html');
-                form.appendChild(nextField);
-            }
-            
-            if (!document.querySelector('input[name="_subject"]')) {
-                const subjectField = document.createElement('input');
-                subjectField.setAttribute('type', 'hidden');
-                subjectField.setAttribute('name', '_subject');
-                subjectField.setAttribute('value', 'New Pilates Assessment');
-                form.appendChild(subjectField);
-            }
-            
-            // Submit the form
-            form.submit();
+        document.getElementById('name').addEventListener('input', function() {
+            // Update the email subject with the client name as they type
+            const clientName = document.getElementById('name').value;
+            document.getElementById('emailSubject').value = `New Pilates Assessment - ${clientName}`;
         });
+
+        document.getElementById('assessmentForm').addEventListener('submit', function(event) {
+            // Form will submit normally since we're using the action attribute
+            // and hidden fields directly in the HTML
+            
+            // Make sure the subject has the client name before submitting
+            const clientName = document.getElementById('name').value;
+            document.getElementById('emailSubject').value = `New Pilates Assessment - ${clientName}`;
+            
+            // Form validation can be added here if needed
+            return true;
+        });
+        
+        // Fim do script
     </script>
 </body>
 </html>

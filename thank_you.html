@@ -108,24 +108,7 @@
         <p>We have successfully received your assessment form. Our team of healthcare professionals will carefully review your information and get back to you shortly.</p>
         <p>A confirmation email will be sent to you from <span class="email-highlight">assessment@healthcenter.ae</span></p>
         <p>If you have any immediate concerns, please don't hesitate to contact us directly.</p>
-        <p id="countdown">Redirecting to home page in 5 seconds...</p>
-        <a href="assessment_options.html" class="home-link">Return to Home</a>
-
-    <script>
-        // Countdown timer
-        let seconds = 5;
-        const countdownElement = document.getElementById('countdown');
-        
-        const countdown = setInterval(() => {
-            seconds--;
-            if (seconds > 0) {
-                countdownElement.textContent = `Redirecting to home page in ${seconds} seconds...`;
-            } else {
-                clearInterval(countdown);
-                countdownElement.textContent = 'Redirecting...';
-            }
-        }, 1000);
-    </script>
+        <a href="login.html" class="home-link">Return to Home</a>
         <svg class="uae-flag" viewBox="0 0 900 600" style="width: 60px; height: 40px; margin: 20px auto 0; display: block;">
             <rect width="900" height="200" fill="#00732f"/>
             <rect y="200" width="900" height="200" fill="#ffffff"/>
