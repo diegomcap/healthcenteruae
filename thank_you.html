@@ -102,6 +102,22 @@
     </style>
 </head>
 <body>
+    <script>
+        // Marca a chave como utilizada quando o formulário é enviado com sucesso
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentKey = localStorage.getItem('currentAccessKey');
+            if (currentKey) {
+                // Obtém a lista de chaves utilizadas
+                const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
+                
+                // Adiciona a chave atual à lista de chaves utilizadas se ainda não estiver lá
+                if (!usedKeys.includes(currentKey)) {
+                    usedKeys.push(currentKey);
+                    localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
+                }
+            }
+        });
+    </script>
     <div class="container">
         <div class="success-icon">✓</div>
         <h1>Thank You for Your Assessment</h1>

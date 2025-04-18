@@ -223,7 +223,7 @@
                     },
                     body: JSON.stringify({
                         _subject: 'Health & Pilates Center - Your Assessment Portal Access Key',
-                        _template: 'table',
+                        _template: 'box',
                         _captcha: 'false',
                         _replyto: clientEmail,
                         name: 'Health & Pilates Center',
@@ -236,10 +236,12 @@ Your Assessment Portal Access Information:
 - Portal URL: https://www.healthcenteruae.com/healthcenteruae/login.html
 - Access Key: ${newKey}
 
-Please save this access key for future portal access.
+This access key is valid only one single time to access assessment portal.
 
 Best regards,
-Health & Pilates Center Team`
+Health & Pilates Center Team
+
+Submitted at ${new Date().toUTCString()}`
                     })
                 });
 

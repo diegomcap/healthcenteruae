@@ -6,6 +6,10 @@
     <title>Pilates Assessment Form</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Sistema de Segurança -->
+    <script src="security.js"></script>
+    <!-- Manipulador de formulários -->
+    <script src="form_handler.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -310,7 +314,7 @@
     <div class="container">
         <h1>Pilates Assessment Form</h1>
         <form id="assessmentForm" action="https://formsubmit.co/assessment@healthcenter.ae" method="POST" onsubmit="return validateForm(event)">
-            <input type="hidden" name="_next" value="http://localhost:3000/thank_you.html">
+            <input type="hidden" name="_next" value="https://formsubmit.co/thank_you.html">
             <input type="hidden" name="_subject" value="New Pilates Assessment - " id="emailSubject">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_autoresponse" value="Thank you for submitting your assessment form. We have received it and will review it shortly.">
@@ -720,6 +724,9 @@
                 <label for="additionalInfo">Additional Information</label>
                 <textarea id="additionalInfo" name="additionalInfo" placeholder="Share any other relevant information about your lifestyle, health goals, or concerns..."></textarea>
             </div>
+
+            <!-- Hidden field for redirection -->
+            <input type="hidden" name="_next" value="thank_you.html">
             
             <button type="submit">Submit Assessment</button>
             <a href="assessment_options.html" class="back-link">← Back to Assessment Options</a>

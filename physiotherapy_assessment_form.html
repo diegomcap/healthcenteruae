@@ -4,28 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Physiotherapy Assessment Form</title>
+    <!-- Sistema de Segurança -->
+    <script src="security.js"></script>
+    <!-- Manipulador de formulários -->
+    <script src="form_handler.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
         
         body {
-            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
             margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
         }
         
         .container {
             background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             padding: 30px;
             width: 100%;
             max-width: 800px;
+            animation: fadeIn 0.8s ease-out;
+            margin: 20px 0;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         h1 {
@@ -34,6 +47,16 @@
             margin-bottom: 30px;
             border-bottom: 2px solid #3498db;
             padding-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        h2 {
+            color: #3498db;
+            margin-top: 25px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
         }
         
         .form-group {
@@ -88,17 +111,22 @@
             background-color: #3498db;
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 14px 28px;
             font-size: 16px;
-            border-radius: 5px;
+            border-radius: 50px;
             cursor: pointer;
             display: block;
             margin: 30px auto 0;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
         }
         
         button:hover {
             background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.4);
         }
         
         @media (max-width: 768px) {
@@ -106,6 +134,33 @@
                 flex: 100%;
                 margin-bottom: 15px;
             }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.4rem;
+            }
+        }
+        
+        /* Animações para elementos do formulário */
+        .form-group {
+            transition: all 0.3s ease;
+        }
+        
+        .form-group:focus-within {
+            transform: translateY(-5px);
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.6);
         }
     </style>
     <script>
@@ -115,12 +170,32 @@
             // Get the form element
             const form = document.getElementById('assessmentForm');
             
+            // Basic validation
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('invalid');
+                    showValidationMessage(field, 'Este campo é obrigatório');
+                } else {
+                    field.classList.remove('invalid');
+                    hideValidationMessage(field);
+                }
+            });
+            
+            if (!isValid) {
+                showFormError('Por favor, preencha todos os campos obrigatórios.');
+                return false;
+            }
+            
             // Get client name for the subject
             const clientName = document.getElementById('name').value;
             
             // Add necessary hidden fields for FormSubmit
             const hiddenFields = [
-                { name: '_next', value: './thank_you.html' },
+                { name: '_next', value: 'thank_you.html' },
                 { name: '_subject', value: `New Physiotherapy Assessment - ${clientName}` },
                 { name: '_captcha', value: 'false' },
                 { name: '_template', value: 'table' },
@@ -138,10 +213,58 @@
                 }
             });
             
+            // Show loading indicator
+            showLoadingIndicator();
+            
             // Submit the form
-            form.submit();
+            setTimeout(() => {
+                form.submit();
+            }, 800);
+            
             return false;
-        });
+        }
+        
+        function showValidationMessage(field, message) {
+            let messageElement = field.parentElement.querySelector('.validation-message');
+            
+            if (!messageElement) {
+                messageElement = document.createElement('div');
+                messageElement.className = 'validation-message';
+                field.parentElement.appendChild(messageElement);
+            }
+            
+            messageElement.textContent = message;
+            messageElement.style.display = 'block';
+        }
+        
+        function hideValidationMessage(field) {
+            const messageElement = field.parentElement.querySelector('.validation-message');
+            if (messageElement) {
+                messageElement.style.display = 'none';
+            }
+        }
+        
+        function showFormError(message) {
+            let errorElement = document.getElementById('form-error');
+            
+            if (!errorElement) {
+                errorElement = document.createElement('div');
+                errorElement.id = 'form-error';
+                document.querySelector('.container').insertBefore(errorElement, document.querySelector('form'));
+            }
+            
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            // Scroll to error
+            errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        function showLoadingIndicator() {
+            const button = document.querySelector('button[type="submit"]');
+            button.innerHTML = '<span class="spinner"></span> Enviando...';
+            button.disabled = true;
+        }
     </script>
 </head>
 <body>
@@ -149,7 +272,7 @@
         <h1>Physiotherapy Assessment Form</h1>
         
         <form id="assessmentForm" action="https://formsubmit.co/assessment@healthcenter.ae" method="POST" onsubmit="return validateForm(event)">
-            <input type="hidden" name="_next" value="http://localhost:3000/thank_you.html">
+            <input type="hidden" name="_next" value="thank_you.html">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_autoresponse" value="Thank you for submitting your assessment form. We have received it and will review it shortly.">
             <!-- Basic Data -->
@@ -200,6 +323,51 @@
     }
     #bmiStatusDisplay {
         animation: pulse 2s infinite;
+        transition: all 0.5s ease;
+        opacity: 0;
+    }
+    #bmiStatusDisplay.visible {
+        opacity: 1;
+    }
+    
+    /* Estilos para validação de formulário */
+    .validation-message {
+        color: #e74c3c;
+        font-size: 0.85em;
+        margin-top: 5px;
+        display: none;
+    }
+    
+    input.invalid, textarea.invalid, select.invalid {
+        border-color: #e74c3c;
+        background-color: rgba(231, 76, 60, 0.05);
+    }
+    
+    #form-error {
+        background-color: #fceaea;
+        border-left: 4px solid #e74c3c;
+        color: #e74c3c;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        font-size: 0.9em;
+        display: none;
+    }
+    
+    .spinner {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 0.8s linear infinite;
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
 </style>
 <div id="bmiStatusDisplay" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000; max-width: 300px; text-align: center;"></div>
@@ -332,6 +500,51 @@
     }
     #bmiStatusDisplay {
         animation: pulse 2s infinite;
+        transition: all 0.5s ease;
+        opacity: 0;
+    }
+    #bmiStatusDisplay.visible {
+        opacity: 1;
+    }
+    
+    /* Estilos para validação de formulário */
+    .validation-message {
+        color: #e74c3c;
+        font-size: 0.85em;
+        margin-top: 5px;
+        display: none;
+    }
+    
+    input.invalid, textarea.invalid, select.invalid {
+        border-color: #e74c3c;
+        background-color: rgba(231, 76, 60, 0.05);
+    }
+    
+    #form-error {
+        background-color: #fceaea;
+        border-left: 4px solid #e74c3c;
+        color: #e74c3c;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        font-size: 0.9em;
+        display: none;
+    }
+    
+    .spinner {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 0.8s linear infinite;
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
 </style>
 <div id="bmiStatusDisplay" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000; max-width: 300px; text-align: center;"></div>
@@ -349,25 +562,23 @@
         // Calculate BMI when height and weight are entered
         function getBmiStatus(bmi) {
             if (bmi < 18.5) {
-                return {status: "Underweight - Let's work to strengthen your body!", color: "#3498db", icon: "⚠️"};
+                return {status: "Abaixo do peso - Vamos trabalhar para fortalecer seu corpo!", color: "#3498db", icon: "⚠️"};
             } else if (bmi < 25) {
-                return {status: "Healthy weight - Keep maintaining this balance!", color: "#2ecc71", icon: "✅"};
+                return {status: "Peso saudável - Continue mantendo este equilíbrio!", color: "#2ecc71", icon: "✅"};
             } else if (bmi < 30) {
-                return {status: "Overweight - Physiotherapy can help improve your body composition!", color: "#f1c40f", icon: "⚠️"};
+                return {status: "Sobrepeso - A fisioterapia pode ajudar a melhorar sua composição corporal!", color: "#f1c40f", icon: "⚠️"};
             } else if (bmi < 35) {
-                return {status: "Obesity Grade I - Together for a healthier life!", color: "#e67e22", icon: "⚠️"};
+                return {status: "Obesidade Grau I - Juntos por uma vida mais saudável!", color: "#e67e22", icon: "⚠️"};
             } else if (bmi < 40) {
-                return {status: "Obesity Grade II - Let's transform your health step by step!", color: "#e74c3c", icon: "⚠️"};
+                return {status: "Obesidade Grau II - Vamos transformar sua saúde passo a passo!", color: "#e74c3c", icon: "⚠️"};
             }
-            return {status: "Obesity Grade III - Every small change makes a difference!", color: "#c0392b", icon: "❌"};
+            return {status: "Obesidade Grau III - Cada pequena mudança faz diferença!", color: "#c0392b", icon: "❌"};
         }
 
         function animateStatusBox(box) {
-            box.style.opacity = "0";
-            box.style.transform = "translateY(20px)";
+            box.style.display = "block";
             setTimeout(function() {
-                box.style.opacity = "1";
-                box.style.transform = "translateY(0)";
+                box.classList.add('visible');
             }, 50);
         }
 
@@ -382,8 +593,7 @@
                 bmiInput.value = bmi.toFixed(1);
                 
                 const statusObj = getBmiStatus(bmi);
-                statusBox.innerHTML = `<span style='font-size:1.5em;'>${statusObj.icon}</span> <strong>${statusObj.status}</strong> (BMI: ${bmi.toFixed(1)})`;
-                statusBox.style.display = "block";
+                statusBox.innerHTML = `<span style='font-size:1.5em;'>${statusObj.icon}</span> <strong>${statusObj.status}</strong> (IMC: ${bmi.toFixed(1)})`;
                 statusBox.style.background = statusObj.color;
                 statusBox.style.color = "#fff";
                 statusBox.style.padding = "16px";
@@ -395,9 +605,34 @@
                 animateStatusBox(statusBox);
             } else {
                 bmiInput.value = '';
-                statusBox.style.display = "none";
+                statusBox.classList.remove('visible');
+                setTimeout(() => {
+                    statusBox.style.display = "none";
+                }, 300);
             }
         }
+        
+        // Adiciona feedback visual aos campos do formulário
+        document.addEventListener('DOMContentLoaded', function() {
+            const formInputs = document.querySelectorAll('input, textarea, select');
+            
+            formInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('active');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('active');
+                    
+                    // Validação básica para campos obrigatórios
+                    if (this.hasAttribute('required') && !this.value.trim()) {
+                        this.classList.add('invalid');
+                    } else {
+                        this.classList.remove('invalid');
+                    }
+                });
+            });
+        });
         
         // Add event listeners to height and weight inputs
         document.getElementById('height').addEventListener('input', calculateBMI);
@@ -418,7 +653,7 @@
                 const nextField = document.createElement('input');
                 nextField.setAttribute('type', 'hidden');
                 nextField.setAttribute('name', '_next');
-                nextField.setAttribute('value', 'thank_you.html');
+                nextField.setAttribute('value', 'https://formsubmit.co/thank_you.html');
                 form.appendChild(nextField);
             }
             

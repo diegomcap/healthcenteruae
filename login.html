@@ -209,7 +209,7 @@
 
             try {
                 let validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
-                const adminKey = 'ADMIN2024';
+                const adminKey = '@dmin$tr@t0rK&yG&n';
 
                 // Verifica chave de admin
                 if (accessKey === adminKey) {
@@ -229,8 +229,7 @@
 
                 // Valida a chave de acesso
                 if (validKeys.includes(accessKey)) {
-                    usedKeys.push(accessKey);
-                    localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
+                    // Não marca a chave como usada no login, apenas armazena para uso posterior
                     localStorage.setItem('currentAccessKey', accessKey);
                     window.location.href = 'index.html';
                 } else {
