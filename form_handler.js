@@ -5,8 +5,22 @@
  * @param {HTMLFormElement} form - The form element
  */
 function handleFormSubmit(form) {
+    // Flag para controlar envios múltiplos
+    let isSubmitting = false;
+    
+    // Remove event listeners anteriores para evitar duplicação
+    const clonedForm = form.cloneNode(true);
+    form.parentNode.replaceChild(clonedForm, form);
+    form = clonedForm;
+    
     // Previne o envio normal do formulário
     form.addEventListener('submit', function(event) {
+        // Previne múltiplos envios
+        if (isSubmitting) {
+            event.preventDefault();
+            return;
+        }
+        isSubmitting = true;
         event.preventDefault();
         
         // Obtém a URL de ação do formulário
@@ -47,6 +61,7 @@ function handleFormSubmit(form) {
             console.error('Error sending form:', error);
             submitButton.innerHTML = originalButtonText;
             submitButton.disabled = false;
+            isSubmitting = false;
             alert('An error occurred while sending the form. Please try again.');
         });
     });
