@@ -1,18 +1,17 @@
-// Security system to ensure all pages can only be accessed after access code validation
+// Sistema de segurança para garantir que todas as páginas só possam ser acessadas após validação do código de acesso
 
-// Function to check if user is authenticated
+// Função para verificar se o usuário está autenticado
 function checkPageSecurity() {
-    // List of pages that don't require authentication
+    // Lista de páginas que não precisam de autenticação
     const publicPages = [
         'login.html',
-        'already_used.html',
-        'thank_you.html'
+        'already_used.html'
     ];
     
-    // Get current page name
+    // Obtém o nome da página atual
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     
-    // If current page is in the public pages list, no authentication needed
+    // Se a página atual estiver na lista de páginas públicas, não precisa verificar autenticação
     if (publicPages.includes(currentPage)) {
         return true;
     }
@@ -22,31 +21,31 @@ function checkPageSecurity() {
     const currentKey = localStorage.getItem('currentAccessKey');
     const adminKey = 'ADMIN2024';
 
-    // If no access key is stored, redirect to login
+    // Se não houver chave de acesso armazenada
     if (!currentKey) {
         window.location.href = 'login.html';
         return false;
     }
 
-    // If it's the admin key, allow access
+    // Se for a chave de admin, permite acesso
     if (currentKey === adminKey) {
         return true;
     }
 
-    // If the key has already been used, redirect to already used page
+    // Se a chave já foi usada, redireciona para página de chave já utilizada
     if (usedKeys.includes(currentKey)) {
         window.location.href = 'already_used.html';
         return false;
     }
 
-    // If the key is not valid, redirect to login
+    // Se a chave não for válida, redireciona para o login
     if (!validKeys.includes(currentKey)) {
         window.location.href = 'login.html';
         return false;
     }
     
-    // We don't mark the key as used here, this will be done after the user completes the assessment
-    // Marking as used should be done in the assessment forms, not during security verification
+    // Não registramos a chave como usada aqui, isso será feito após o usuário completar a avaliação
+    // A marcação como usada deve ser feita nos formulários de avaliação, não durante a verificação de segurança
 
     return true;
 }

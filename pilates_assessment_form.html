@@ -6,9 +6,9 @@
     <title>Pilates Assessment Form</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Sistema de Segurança -->
+    <!-- Security System -->
     <script src="security.js"></script>
-    <!-- Manipulador de formulários -->
+    <!-- Form Handler -->
     <script src="form_handler.js"></script>
     <style>
         * {
@@ -313,9 +313,8 @@
 <body>
     <div class="container">
         <h1>Pilates Assessment Form</h1>
-        <form id="assessmentForm" action="https://formsubmit.co/assessment@healthcenter.ae" method="POST" onsubmit="return validateForm(event)">
+        <form id="pilatesForm" action="https://formsubmit.co/assessment@healthcenter.ae" method="POST" onsubmit="return validateForm(event)">
             <input type="hidden" name="_next" value="https://formsubmit.co/thank_you.html">
-            <input type="hidden" name="_subject" value="New Pilates Assessment - " id="emailSubject">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_autoresponse" value="Thank you for submitting your assessment form. We have received it and will review it shortly.">
             <!-- Basic Information -->

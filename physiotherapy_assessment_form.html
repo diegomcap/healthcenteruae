@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Physiotherapy Assessment Form</title>
-    <!-- Sistema de Segurança -->
+    <!-- Security System -->
     <script src="security.js"></script>
-    <!-- Manipulador de formulários -->
+    <!-- Form Handler -->
     <script src="form_handler.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -178,7 +178,7 @@
                 if (!field.value.trim()) {
                     isValid = false;
                     field.classList.add('invalid');
-                    showValidationMessage(field, 'Este campo é obrigatório');
+                    showValidationMessage(field, 'This field is required');
                 } else {
                     field.classList.remove('invalid');
                     hideValidationMessage(field);
@@ -186,7 +186,7 @@
             });
             
             if (!isValid) {
-                showFormError('Por favor, preencha todos os campos obrigatórios.');
+                showFormError('Please fill in all required fields.');
                 return false;
             }
             
@@ -262,7 +262,7 @@
         
         function showLoadingIndicator() {
             const button = document.querySelector('button[type="submit"]');
-            button.innerHTML = '<span class="spinner"></span> Enviando...';
+            button.innerHTML = '<span class="spinner"></span> Sending...';
             button.disabled = true;
         }
     </script>
@@ -271,7 +271,7 @@
     <div class="container">
         <h1>Physiotherapy Assessment Form</h1>
         
-        <form id="assessmentForm" action="https://formsubmit.co/assessment@healthcenter.ae" method="POST" onsubmit="return validateForm(event)">
+        <form id="assessmentForm" action="https://formsubmit.co/assessment@healthcenter.ae" method="POST">
             <input type="hidden" name="_next" value="thank_you.html">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_autoresponse" value="Thank you for submitting your assessment form. We have received it and will review it shortly.">
@@ -330,7 +330,7 @@
         opacity: 1;
     }
     
-    /* Estilos para validação de formulário */
+    /* Form validation styles */
     .validation-message {
         color: #e74c3c;
         font-size: 0.85em;
@@ -507,7 +507,7 @@
         opacity: 1;
     }
     
-    /* Estilos para validação de formulário */
+    /* Form validation styles */
     .validation-message {
         color: #e74c3c;
         font-size: 0.85em;
@@ -559,120 +559,26 @@
     </div>
     
     <script>
-        // Calculate BMI when height and weight are entered
-        function getBmiStatus(bmi) {
-            if (bmi < 18.5) {
-                return {status: "Abaixo do peso - Vamos trabalhar para fortalecer seu corpo!", color: "#3498db", icon: "⚠️"};
-            } else if (bmi < 25) {
-                return {status: "Peso saudável - Continue mantendo este equilíbrio!", color: "#2ecc71", icon: "✅"};
-            } else if (bmi < 30) {
-                return {status: "Sobrepeso - A fisioterapia pode ajudar a melhorar sua composição corporal!", color: "#f1c40f", icon: "⚠️"};
-            } else if (bmi < 35) {
-                return {status: "Obesidade Grau I - Juntos por uma vida mais saudável!", color: "#e67e22", icon: "⚠️"};
-            } else if (bmi < 40) {
-                return {status: "Obesidade Grau II - Vamos transformar sua saúde passo a passo!", color: "#e74c3c", icon: "⚠️"};
-            }
-            return {status: "Obesidade Grau III - Cada pequena mudança faz diferença!", color: "#c0392b", icon: "❌"};
-        }
-
-        function animateStatusBox(box) {
-            box.style.display = "block";
-            setTimeout(function() {
-                box.classList.add('visible');
-            }, 50);
-        }
-
-        function calculateBMI() {
-            const height = parseFloat(document.getElementById('height').value);
+        // Função para calcular IMC e massa muscular
+        function calculateBMIAndMuscleMass() {
             const weight = parseFloat(document.getElementById('weight').value);
-            const bmiInput = document.getElementById('bmi');
-            const statusBox = document.getElementById('bmiStatusDisplay');
+            const height = parseFloat(document.getElementById('height').value) / 100; // convertendo para metros
             
-            if (height && weight) {
-                const bmi = weight / Math.pow(height / 100, 2);
-                bmiInput.value = bmi.toFixed(1);
+            if (weight && height) {
+                // Calcula IMC
+                const bmi = weight / (height * height);
+                document.getElementById('bmi').value = bmi.toFixed(2);
                 
-                const statusObj = getBmiStatus(bmi);
-                statusBox.innerHTML = `<span style='font-size:1.5em;'>${statusObj.icon}</span> <strong>${statusObj.status}</strong> (IMC: ${bmi.toFixed(1)})`;
-                statusBox.style.background = statusObj.color;
-                statusBox.style.color = "#fff";
-                statusBox.style.padding = "16px";
-                statusBox.style.borderRadius = "8px";
-                statusBox.style.marginTop = "8px";
-                statusBox.style.fontSize = "1.2em";
-                statusBox.style.boxShadow = "0 4px 16px rgba(0,0,0,0.08)";
-                statusBox.style.transition = "all 0.3s cubic-bezier(.68,-0.55,.27,1.55)";
-                animateStatusBox(statusBox);
-            } else {
-                bmiInput.value = '';
-                statusBox.classList.remove('visible');
-                setTimeout(() => {
-                    statusBox.style.display = "none";
-                }, 300);
+                // Calcula massa muscular estimada (usando uma fórmula simplificada)
+                // Esta é uma estimativa básica - a fórmula real pode variar
+                const muscleMass = (weight * (1 - (0.15 + (bmi - 20) * 0.002))).toFixed(1);
+                document.getElementById('muscleMass').value = muscleMass;
             }
         }
         
-        // Adiciona feedback visual aos campos do formulário
-        document.addEventListener('DOMContentLoaded', function() {
-            const formInputs = document.querySelectorAll('input, textarea, select');
-            
-            formInputs.forEach(input => {
-                input.addEventListener('focus', function() {
-                    this.parentElement.classList.add('active');
-                });
-                
-                input.addEventListener('blur', function() {
-                    this.parentElement.classList.remove('active');
-                    
-                    // Validação básica para campos obrigatórios
-                    if (this.hasAttribute('required') && !this.value.trim()) {
-                        this.classList.add('invalid');
-                    } else {
-                        this.classList.remove('invalid');
-                    }
-                });
-            });
-        });
-        
-        // Add event listeners to height and weight inputs
-        document.getElementById('height').addEventListener('input', calculateBMI);
-        document.getElementById('weight').addEventListener('input', calculateBMI);
-        
-        document.getElementById('assessmentForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            // Configuration for sending the form via email using FormSubmit
-            const form = document.getElementById('assessmentForm');
-            
-            // Add action attribute to the form to use FormSubmit service with redirect
-            form.setAttribute('action', 'https://formsubmit.co/assessment@healthcenter.ae');
-            form.setAttribute('method', 'POST');
-            
-            // Add hidden fields for FormSubmit configuration
-            if (!document.querySelector('input[name="_next"]')) {
-                const nextField = document.createElement('input');
-                nextField.setAttribute('type', 'hidden');
-                nextField.setAttribute('name', '_next');
-                nextField.setAttribute('value', 'https://formsubmit.co/thank_you.html');
-                form.appendChild(nextField);
-            }
-            
-            if (!document.querySelector('input[name="_subject"]')) {
-                const subjectField = document.createElement('input');
-                subjectField.setAttribute('type', 'hidden');
-                // Get client name for the subject
-                const clientName = document.getElementById('name').value;
-                
-                subjectField.setAttribute('name', '_subject');
-                subjectField.setAttribute('value', `New Physiotherapy Assessment - ${clientName}`);
-                form.appendChild(subjectField);
-            }
-            
-            // Submit the form
-            
-            // Submit the form
-            form.submit();
-        });
+        // Adiciona listeners para os campos de peso e altura
+        document.getElementById('weight').addEventListener('input', calculateBMIAndMuscleMass);
+        document.getElementById('height').addEventListener('input', calculateBMIAndMuscleMass);
     </script>
 </body>
 </html>
