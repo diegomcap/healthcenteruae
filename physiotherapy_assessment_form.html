@@ -271,7 +271,7 @@
     <div class="container">
         <h1>Physiotherapy Assessment Form</h1>
         
-        <form id="assessmentForm" action="https://formsubmit.co/assessment@healthcenter.ae" method="POST">
+        <form id="physiotherapyForm" action="https://formsubmit.co/assessment@healthcenter.ae" method="POST">
             <input type="hidden" name="_next" value="thank_you.html">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_autoresponse" value="Thank you for submitting your assessment form. We have received it and will review it shortly.">
@@ -288,6 +288,21 @@
                     <div class="form-group">
                         <label for="age" class="required">Age</label>
                         <input type="number" id="age" name="age" min="1" max="120" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="email" class="required">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="phone" class="required">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
                     </div>
                 </div>
             </div>

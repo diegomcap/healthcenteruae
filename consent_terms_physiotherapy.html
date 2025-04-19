@@ -189,7 +189,7 @@
         
         <p><strong>8. Use of Image:</strong> I authorize the use of my image in photos or videos for clinical documentation and internal educational purposes. Any use for marketing or social media will be requested separately.</p>
         
-        <p><strong>9. Isenção de Responsabilidade:</strong> Ao participar do tratamento fisioterapêutico, assumo voluntariamente todos os riscos associados e isento o Health & Pilates Center e seus profissionais de responsabilidade por complicações resultantes do tratamento, exceto em casos de negligência comprovada.</p>
+        <p><strong>9. Disclaimer:</strong> By participating in physical therapy treatment, I voluntarily assume all associated risks and release Health & Pilates Center and its professionals from liability for complications resulting from treatment, except in cases of proven negligence.</p>
         
         <div class="consent-checkbox">
             <div class="checkbox-container">
@@ -308,6 +308,8 @@
                     consentData.append('consent_date', new Date().toLocaleString());
                     consentData.append('attachment', pdfFile, pdfFile.name);
                     consentData.append('_template', 'table');
+                    consentData.append('message', 'Thank you for choosing Health & Pilates Center for your physiotherapy treatment. We appreciate your trust in our services. Please find attached your signed consent form for your records.');
+                    consentData.append('_autoresponse', 'Thank you for confirming your consent for physiotherapy treatment at Health & Pilates Center. We have attached a copy of your signed consent form for your records. We look forward to helping you achieve your health and wellness goals.');
                     
                     // Send to client
                     await fetch('https://formsubmit.co/' + formData.email, {
@@ -320,6 +322,8 @@
                         method: 'POST',
                         body: consentData
                     });
+                    
+                    console.log('Consent PDF sent successfully to both emails');
                 } catch (error) {
                     console.error('Error sending consent email:', error);
                 }

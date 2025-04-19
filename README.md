@@ -41,4 +41,4 @@ A web-based assessment portal for Health & Pilates Center clients. The portal pr
 
 ## License
 
-All rights reserved. Health & Pilates Center © 2024
+All rights reserved. Health & Pilates Center © 2025

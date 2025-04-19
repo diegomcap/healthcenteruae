@@ -308,6 +308,8 @@
                     consentData.append('consent_date', new Date().toLocaleString());
                     consentData.append('attachment', pdfFile, pdfFile.name);
                     consentData.append('_template', 'table');
+                    consentData.append('message', 'Thank you for choosing Health & Pilates Center for your Pilates classes. We appreciate your trust in our services. Please find attached your signed consent form for your records.');
+                    consentData.append('_autoresponse', 'Thank you for confirming your consent for Pilates classes at Health & Pilates Center. We have attached a copy of your signed consent form for your records. We look forward to helping you achieve your health and wellness goals.');
                     
                     // Send to client
                     await fetch('https://formsubmit.co/' + formData.email, {
@@ -320,6 +322,8 @@
                         method: 'POST',
                         body: consentData
                     });
+                    
+                    console.log('Consent PDF sent successfully to both emails');
                 } catch (error) {
                     console.error('Error sending consent email:', error);
                 }
