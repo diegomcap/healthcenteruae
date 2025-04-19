@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Overview - Health & Pilates Center</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 15px;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 40px;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            font-size: 1.3rem;
+            margin-top: 25px;
+        }
+        
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .flow-diagram {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .flow-item {
+            background-color: #fff;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px;
+            min-width: 200px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .flow-arrow {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #3498db;
+            clip-path: polygon(0% 20%, 60% 20%, 60% 0%, 100% 50%, 60% 100%, 60% 80%, 0% 80%);
+        }
+        
+        .file-structure {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .tech-item {
+            background-color: #e3f2fd;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #0d47a1;
+        }
+        
+        .demo-section {
+            margin: 40px 0;
+        }
+        
+        .demo-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .demo-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .demo-button:hover {
+            background-color: #2980b9;
+        }
+        
+        .security-flow {
+            margin: 30px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .flow-item {
+                min-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Health & Pilates Center - Project Overview</h1>
+        
+        <div class="section">
+            <h2>Project Description</h2>
+            <p>This web application serves as a secure portal for Health & Pilates Center clients to access and complete assessment forms. The system uses a key-based authentication mechanism to ensure that only authorized clients can access the forms, and each access key can only be used once.</p>
+        </div>
+        
+        <div class="section">
+            <h2>Technology Stack</h2>
+            <div class="tech-stack">
+                <div class="tech-item">HTML5</div>
+                <div class="tech-item">CSS3</div>
+                <div class="tech-item">JavaScript</div>
+                <div class="tech-item">LocalStorage API</div>
+                <div class="tech-item">Node.js/Express</div>
+                <div class="tech-item">Python/Flask</div>
+            </div>
+            <p>The project can be run using either Node.js or Python as the backend server. Both implementations are provided:</p>
+            <ul>
+                <li><strong>server.js</strong> - Node.js/Express implementation</li>
+                <li><strong>server.py</strong> - Python/Flask implementation</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>File Structure</h2>
+            <div class="file-structure">
+├── login.html                      # Authentication page
+├── index.html                      # Landing page after login
+├── admin.html                      # Admin panel for managing access keys
+├── #@4adm1@.html                   # Alternative admin page
+├── assessment_options.html         # Page to choose assessment type
+├── physiotherapy_assessment_form.html  # Physiotherapy form
+├── pilates_assessment_form.html    # Pilates form
+├── thank_you.html                  # Confirmation page after form submission
+├── already_used.html               # Page shown when key was already used
+├── security.js                     # Security implementation
+├── form_handler.js                 # Form submission handler
+├── auth.js                         # Authentication functions
+├── server.js                       # Node.js server implementation
+├── server.py                       # Python server implementation
+└── keys.json                       # Storage for access keys
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>User Flow</h2>
+            <div class="flow-diagram">
+                <div class="flow-item">Login Page<br><small>Authentication with access key</small></div>
+                <div class="flow-item">Landing Page<br><small>Welcome screen with options</small></div>
+                <div class="flow-item">Assessment Options<br><small>Choose assessment type</small></div>
+                <div class="flow-item">Assessment Form<br><small>Complete the selected form</small></div>
+                <div class="flow-item">Thank You Page<br><small>Confirmation of submission</small></div>
+            </div>
+            
+            <h3>Admin Flow</h3>
+            <div class="flow-diagram">
+                <div class="flow-item">Admin Login<br><small>Using admin key</small></div>
+                <div class="flow-item">Admin Panel<br><small>Manage access keys</small></div>
+                <div class="flow-item">Generate Keys<br><small>Create new access keys</small></div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Security Implementation</h2>
+            <div class="card">
+                <h3>Authentication System</h3>
+                <p>The system uses a key-based authentication mechanism stored in the browser's localStorage. Each access key can only be used once to complete an assessment form.</p>
+                
+                <div class="security-flow">
+                    <h4>Key Validation Process:</h4>
+                    <ol>
+                        <li>User enters access key on login page</li>
+                        <li>System checks if key exists in validKeys array</li>
+                        <li>System checks if key has been used before (usedKeys array)</li>
+                        <li>If valid and unused, user is granted access</li>
+                        <li>Key is marked as used after form submission</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Admin Access</h3>
+                <p>Admin access is granted using a special admin key: <code>@dmin$tr@t0rK&yG&n</code></p>
+                <p>The admin panel allows for:</p>
+                <ul>
+                    <li>Generating new access keys</li>
+                    <li>Viewing existing keys</li>
+                    <li>Managing used/unused keys</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section demo-section">
+            <h2>Interactive Demo</h2>
+            <p>You can explore the different pages of the application using the links below:</p>
+            
+            <div class="demo-buttons">
+                <a href="login.html" class="demo-button">Login Page</a>
+                <a href="index.html" class="demo-button">Landing Page</a>
+                <a href="assessment_options.html" class="demo-button">Assessment Options</a>
+                <a href="thank_you.html" class="demo-button">Thank You Page</a>
+                <a href="admin.html" class="demo-button">Admin Panel</a>
+            </div>
+            
+            <div class="card">
+                <h3>Testing Instructions</h3>
+                <p>To test the full flow of the application:</p>
+                <ol>
+                    <li>Access the admin panel using the admin key: <code>@dmin$tr@t0rK&yG&n</code></li>
+                    <li>Generate a new access key</li>
+                    <li>Log out and use the generated key to access the system</li>
+                    <li>Complete an assessment form</li>
+                    <li>Observe that the key is now marked as used</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Server Implementation</h2>
+            <div class="card">
+                <h3>Running with Node.js</h3>
+                <pre>node server.js</pre>
+                <p>The server will start on http://localhost:3000</p>
+            </div>
+            
+            <div class="card">
+                <h3>Running with Python</h3>
+                <pre>python server.py</pre>
+                <p>The Flask server will start on http://localhost:3000</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Form Submission</h2>
+            <p>Forms are handled by the form_handler.js script which:</p>
+            <ul>
+                <li>Intercepts form submissions</li>
+                <li>Sends data via AJAX</li>
+                <li>Marks the access key as used</li>
+                <li>Redirects to the thank you page</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // Add event listeners to demo buttons to ensure proper authentication
+        document.addEventListener('DOMContentLoaded', function() {
+            const demoButtons = document.querySelectorAll('.demo-button');
+            
+            demoButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // For demo purposes, we'll set a temporary access key
+                    if (button.href.includes('login.html')) {
+                        // Don't need to do anything for login page
+                        return;
+                    }
+                    
+                    if (button.href.includes('admin.html')) {
+                        localStorage.setItem('currentAccessKey', '@dmin$tr@t0rK&yG&n');
+                    } else {
+                        // Set a demo key for other pages
+                        const validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
+                        if (!validKeys.includes('DEMO_KEY')) {
+                            validKeys.push('DEMO_KEY');
+                            localStorage.setItem('validKeys', JSON.stringify(validKeys));
+                        }
+                        localStorage.setItem('currentAccessKey', 'DEMO_KEY');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

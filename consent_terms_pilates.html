@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consent Form - Pilates</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        p {
+            color: #34495e;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .consent-checkbox {
+            margin: 30px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-container input {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .checkbox-container label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .confirm-btn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+        }
+        
+        .confirm-btn:hover {
+            background-color: #27ae60;
+        }
+        
+        .cancel-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+        }
+        
+        .cancel-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="consentContent">
+        <h1>Consent Form - Pilates</h1>
+        
+        <p>I, <span id="clientName"></span>, declare that I have been informed and understand the objectives, procedures, risks, and benefits of the Pilates classes offered by Health & Pilates Center.</p>
+        
+        <p><strong>1. Purpose:</strong> I understand that the Pilates method is a system of physical exercises developed to improve strength, flexibility, posture, and general well-being.</p>
+        
+        <p><strong>2. Procedures:</strong> Classes will be taught by qualified professionals and will include specific exercises adapted to my needs and physical conditions.</p>
+        
+        <p><strong>3. Risks and Discomforts:</strong> I have been informed that, as with any exercise program, there is a possibility of physical injuries. Risks include, but are not limited to, muscle pain, strains, sprains, and in rare cases, more serious injuries.</p>
+        
+        <p><strong>4. Participant Responsibilities:</strong> I commit to:</p>
+        <ul>
+            <li>Inform the instructor about any medical condition, injury, or medication that may affect my ability to participate in classes;</li>
+            <li>Follow all instructions provided by professionals;</li>
+            <li>Not perform movements beyond my physical limits;</li>
+            <li>Immediately report any discomfort or pain during exercises.</li>
+        </ul>
+        
+        <p><strong>5. Benefits:</strong> I understand that potential benefits include improved posture, increased muscle strength, greater flexibility, better balance, and reduction of chronic pain, although these results cannot be guaranteed.</p>
+        
+        <p><strong>6. Confidentiality:</strong> I authorize Health & Pilates Center to maintain records of my classes and progress, which will be kept confidential and used only for professional follow-up purposes.</p>
+        
+        <p><strong>7. Right of Refusal or Withdrawal:</strong> I understand that my participation is voluntary and that I may refuse to participate or discontinue my participation at any time.</p>
+        
+        <p><strong>8. Use of Image:</strong> I authorize the use of my image in photos or videos for internal educational purposes. Any use for marketing or social media will be requested separately.</p>
+        
+        <p><strong>9. Disclaimer:</strong> By participating in Pilates classes, I voluntarily assume all associated risks and exempt Health & Pilates Center and its professionals from liability for injuries resulting from my participation, except in cases of proven negligence.</p>
+        
+        <div class="consent-checkbox">
+            <div class="checkbox-container">
+                <input type="checkbox" id="consentCheckbox" required>
+                <label for="consentCheckbox">I have read, understood, and agree to all the terms and conditions described above.</label>
+            </div>
+        </div>
+        
+        <button id="continueBtn" class="btn" disabled>Continue</button>
+    </div>
+    
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <h2>Consent Confirmation</h2>
+            <p>Do you confirm that you have read, understood, and agree to all the terms of consent for Pilates classes?</p>
+            <div class="modal-buttons">
+                <button id="confirmBtn" class="modal-btn confirm-btn">Yes, I agree</button>
+                <button id="cancelBtn" class="modal-btn cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Preencher o nome do cliente a partir dos dados do formulário
+        document.addEventListener('DOMContentLoaded', function() {
+            // Recuperar dados do formulário do localStorage
+            const formData = JSON.parse(localStorage.getItem('formData'));
+            if (formData && formData.name) {
+                document.getElementById('clientName').textContent = formData.name;
+            }
+            
+            // Habilitar/desabilitar botão com base no checkbox
+            const consentCheckbox = document.getElementById('consentCheckbox');
+            const continueBtn = document.getElementById('continueBtn');
+            
+            consentCheckbox.addEventListener('change', function() {
+                continueBtn.disabled = !this.checked;
+            });
+            
+            // Modal de confirmação
+            const modal = document.getElementById('confirmationModal');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            
+            continueBtn.addEventListener('click', function() {
+                modal.style.display = 'flex';
+            });
+            
+            cancelBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            confirmBtn.addEventListener('click', function() {
+                // Armazenar consentimento
+                localStorage.setItem('pilatesConsent', 'true');
+                localStorage.setItem('consentDate', new Date().toISOString());
+                
+                // Enviar email com o termo de consentimento
+                sendConsentEmail();
+                
+                // Redirecionar para página de agradecimento
+                window.location.href = 'thank_you.html';
+            });
+            
+            // Function to generate PDF from consent form
+            async function generateConsentPDF() {
+                const { jsPDF } = window.jspdf;
+                const formData = JSON.parse(localStorage.getItem('formData'));
+                if (!formData) return null;
+                
+                const consentElement = document.getElementById('consentContent');
+                const canvas = await html2canvas(consentElement);
+                const imgData = canvas.toDataURL('image/png');
+                
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                const imgWidth = canvas.width;
+                const imgHeight = canvas.height;
+                const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+                const imgX = (pdfWidth - imgWidth * ratio) / 2;
+                const imgY = 30;
+                
+                pdf.setFontSize(16);
+                pdf.text('PILATES CONSENT FORM', pdfWidth / 2, 20, { align: 'center' });
+                pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+                
+                // Add signature and date
+                const currentDate = new Date().toLocaleDateString();
+                pdf.setFontSize(12);
+                pdf.text(`Date: ${currentDate}`, 20, pdfHeight - 30);
+                pdf.text(`Client Name: ${formData.name}`, 20, pdfHeight - 20);
+                
+                return pdf;
+            }
+            
+            // Function to send email with consent form
+            async function sendConsentEmail() {
+                const formData = JSON.parse(localStorage.getItem('formData'));
+                if (!formData || !formData.email) return;
+                
+                try {
+                    // Generate PDF
+                    const pdf = await generateConsentPDF();
+                    if (!pdf) return;
+                    
+                    const pdfBlob = pdf.output('blob');
+                    const pdfFile = new File([pdfBlob], `consent_pilates_${formData.name.replace(/\s+/g, '_')}.pdf`, { type: 'application/pdf' });
+                    
+                    // Create form data for email
+                    const consentData = new FormData();
+                    consentData.append('_subject', `Consent Form - Pilates - ${formData.name}`);
+                    consentData.append('name', formData.name);
+                    consentData.append('email', formData.email);
+                    consentData.append('consent_type', 'Pilates');
+                    consentData.append('consent_date', new Date().toLocaleString());
+                    consentData.append('attachment', pdfFile, pdfFile.name);
+                    consentData.append('_template', 'table');
+                    
+                    // Send to client
+                    await fetch('https://formsubmit.co/' + formData.email, {
+                        method: 'POST',
+                        body: consentData
+                    });
+                    
+                    // Send to company email
+                    await fetch('https://formsubmit.co/assessment@healthcenter.ae', {
+                        method: 'POST',
+                        body: consentData
+                    });
+                } catch (error) {
+                    console.error('Error sending consent email:', error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

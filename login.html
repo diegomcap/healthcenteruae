@@ -200,9 +200,22 @@
             event.preventDefault();
             const accessKey = document.getElementById('accessKey').value.trim();
             const errorMessage = document.getElementById('errorMessage');
+            
+            // Disable the submit button to prevent multiple submissions
+            const submitButton = document.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Verifying...';
+            
+            // Add a simple activity log
+            const activityLog = JSON.parse(localStorage.getItem('activityLog') || '[]');
+            const logEntry = {
+                timestamp: new Date().toISOString(),
+                action: 'login_attempt',
+                success: false
+            };
 
             if (!accessKey) {
-                errorMessage.textContent = 'Por favor, insira uma chave de acesso.';
+                errorMessage.textContent = 'Please enter an access key.';
                 errorMessage.style.display = 'block';
                 return false;
             }
@@ -231,9 +244,15 @@
                 if (validKeys.includes(accessKey)) {
                     // Não marca a chave como usada no login, apenas armazena para uso posterior
                     localStorage.setItem('currentAccessKey', accessKey);
+                    
+                    // Log successful login
+                    logEntry.success = true;
+                    activityLog.push(logEntry);
+                    localStorage.setItem('activityLog', JSON.stringify(activityLog));
+                    
                     window.location.href = 'index.html';
                 } else {
-                    errorMessage.textContent = 'Chave de acesso inválida. Por favor, tente novamente.';
+                    errorMessage.textContent = 'Invalid access key. Please try again.';
                     errorMessage.style.display = 'block';
                     setTimeout(() => {
                         errorMessage.style.display = 'none';
@@ -243,6 +262,15 @@
                 console.error('Error during validation:', error);
                 errorMessage.textContent = 'Error validating key. Please try again later.';
                 errorMessage.style.display = 'block';
+                
+                // Log error
+                logEntry.error = error.message;
+                activityLog.push(logEntry);
+                localStorage.setItem('activityLog', JSON.stringify(activityLog));
+                
+                // Re-enable the submit button
+                submitButton.disabled = false;
+                submitButton.textContent = 'Access System';
             }
             return false;
         }

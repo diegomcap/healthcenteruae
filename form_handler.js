@@ -1,7 +1,7 @@
-// Form handler to redirect to thank_you.html after submission
+// Form handler to redirect to consent terms page after submission
 
 /**
- * Function to intercept form submission, send via AJAX and redirect to thank_you.html
+ * Function to intercept form submission, send via AJAX and redirect to consent terms page
  * @param {HTMLFormElement} form - The form element
  */
 function handleFormSubmit(form) {
@@ -17,7 +17,7 @@ function handleFormSubmit(form) {
         
         // Get client name for email subject
         const clientName = form.querySelector('#name').value;
-        const formType = form.id === 'assessmentForm' ? 'Physiotherapy' : 'Pilates';
+        const formType = form.id === 'physiotherapyForm' ? 'Physiotherapy' : 'Pilates';
         formData.set('_subject', `New ${formType} Assessment - ${clientName}`);
         
         // Show loading indicator
@@ -25,6 +25,13 @@ function handleFormSubmit(form) {
         const originalButtonText = submitButton.innerHTML;
         submitButton.innerHTML = '<span class="spinner"></span> Sending...';
         submitButton.disabled = true;
+        
+        // Store form data in localStorage for use in consent page
+        const formDataObj = {};
+        for (const [key, value] of formData.entries()) {
+            formDataObj[key] = value;
+        }
+        localStorage.setItem('formData', JSON.stringify(formDataObj));
         
         // Send form via fetch API
         fetch(formAction, {
@@ -45,8 +52,12 @@ function handleFormSubmit(form) {
                 }
             }
             
-            // Redirect to thank you page
-            window.location.href = 'thank_you.html';
+            // Redirect to appropriate consent terms page based on form type
+            if (formType === 'Physiotherapy') {
+                window.location.href = 'consent_terms_physiotherapy.html';
+            } else {
+                window.location.href = 'consent_terms_pilates.html';
+            }
         })
         .catch(error => {
             console.error('Error sending form:', error);
