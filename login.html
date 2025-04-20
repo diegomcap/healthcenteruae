@@ -303,7 +303,7 @@
                         localStorage.setItem('activityLog', JSON.stringify(activityLog));
                         
                         // Redirecionar para a página principal com um pequeno atraso para garantir que o localStorage seja atualizado
-                        submitButton.textContent = 'Acesso autorizado! Redirecionando...';
+                        submitButton.textContent = 'Authorized access! Redirecting...';
                         submitButton.style.backgroundColor = '#27ae60';
                         
                         setTimeout(() => {
@@ -313,13 +313,12 @@
                     } else {
                         // Fallback to localStorage if not in Firebase
                         const validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
-                        const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
                         
-                        // Check already used keys
-                        if (usedKeys.includes(accessKey)) {
-                            window.location.href = 'already_used.html';
-                            return false;
-                        }
+                        // Armazenar a chave atual para uso posterior
+                        localStorage.setItem('currentAccessKey', accessKey);
+                        
+                        // Armazenar a chave atual para uso posterior
+                        localStorage.setItem('currentAccessKey', accessKey);
                         
                         // Validate the access key from localStorage
                         if (validKeys.includes(accessKey)) {
@@ -341,7 +340,7 @@
                             localStorage.setItem('activityLog', JSON.stringify(activityLog));
                             
                             // Redirecionar para a página principal com um pequeno atraso para garantir que o localStorage seja atualizado
-                            submitButton.textContent = 'Acesso autorizado! Redirecionando...';
+                            submitButton.textContent = 'Authorized access! Redirecting...';
                             submitButton.style.backgroundColor = '#27ae60';
                             
                             setTimeout(() => {
@@ -367,7 +366,7 @@
                         localStorage.setItem('currentKey', accessKey);
                         
                         // Redirecionar para a página principal com um pequeno atraso para garantir que o localStorage seja atualizado
-                        submitButton.textContent = 'Acesso autorizado! Redirecionando...';
+                        submitButton.textContent = 'Authorized access! Redirecting...';
                         submitButton.style.backgroundColor = '#27ae60';
                         
                         setTimeout(() => {

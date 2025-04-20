@@ -110,7 +110,8 @@ async function checkPageSecurity() {
     }
 
     // Se a chave já foi usada, redireciona para página de chave já utilizada
-    if (usedKeys.includes(currentKey)) {
+    // Isso permite que o usuário complete o formulário antes de marcar a chave como usada
+    if (usedKeys.includes(currentKey) && !window.location.pathname.includes('thank_you.html')) {
         window.location.href = 'already_used.html';
         return false;
     }

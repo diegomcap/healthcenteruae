@@ -560,6 +560,24 @@ Health & Pilates Center Team`
                         await keysRef.child(keyToRemove).remove();
                         console.log('Key removed from Firebase successfully');
                         
+                        // Também remover da lista de chaves usadas, se existir
+                        try {
+                            const usedKeysRef = database.ref('usedKeys');
+                            const snapshot = await usedKeysRef.once('value');
+                            if (snapshot.exists()) {
+                                const usedKeys = snapshot.val() || [];
+                                const updatedUsedKeys = usedKeys.filter(key => key !== keyToRemove);
+                                await usedKeysRef.set(updatedUsedKeys);
+                            }
+                            
+                            // Também remover do localStorage de chaves usadas
+                            const localUsedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
+                            const updatedLocalUsedKeys = localUsedKeys.filter(key => key !== keyToRemove);
+                            localStorage.setItem('usedKeys', JSON.stringify(updatedLocalUsedKeys));
+                        } catch (usedKeysError) {
+                            console.error('Error updating used keys:', usedKeysError);
+                        }
+                        
                         // Update sync status
                         const syncStatus = document.getElementById('syncStatus');
                         syncStatus.textContent = 'Chave removida do Firebase com sucesso!';
