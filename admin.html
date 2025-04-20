@@ -281,7 +281,7 @@
         // Sync keys with Firebase
         async function syncKeysWithFirebase() {
             const syncStatus = document.getElementById('syncStatus');
-            syncStatus.textContent = 'Syncing with Firebase...';
+            syncStatus.textContent = 'Synchronizing with Firebase...';
             syncStatus.style.color = '#3498db';
             
             try {
@@ -314,22 +314,26 @@
                     // Update display
                     displayKeys();
                     
-                    syncStatus.textContent = `Sync complete! Added ${newKeys.length} new keys from Firebase.`;
+                    syncStatus.textContent = `Synchronization complete! Added ${newKeys.length} new keys from Firebase.`;
                     syncStatus.style.color = '#27ae60';
                 } else {
                     // No keys in Firebase, push all local keys
                     for (const key of validKeys) {
                         await keysRef.child(key).set(true);
                     }
-                    syncStatus.textContent = 'Sync complete! All local keys uploaded to Firebase.';
+                    syncStatus.textContent = 'Synchronization complete! All local keys have been sent to Firebase.';
                     syncStatus.style.color = '#27ae60';
                 }
             } catch (error) {
                 console.error('Error syncing with Firebase:', error);
-                syncStatus.textContent = 'Error syncing with Firebase. Please try again.';
+                syncStatus.textContent = 'Error synchronizing with Firebase. Please try again.';
                 syncStatus.style.color = '#e74c3c';
             }
+            
+            // Scroll to the sync status
+            syncStatus.scrollIntoView({ behavior: 'smooth' });
         }
+        
         
         // Load keys on page load
         window.onload = function() {
@@ -546,7 +550,7 @@ Health & Pilates Center Team`
 
         // Remove key from localStorage and Firebase
         async function removeKey(keyToRemove) {
-            if (confirm('Are you sure you want to remove this key?')) {
+            if (confirm('Tem certeza que deseja remover esta chave?')) {
                 try {
                     validKeys = validKeys.filter(key => key !== keyToRemove);
                     
@@ -555,13 +559,26 @@ Health & Pilates Center Team`
                         const keysRef = database.ref('validKeys');
                         await keysRef.child(keyToRemove).remove();
                         console.log('Key removed from Firebase successfully');
+                        
+                        // Update sync status
+                        const syncStatus = document.getElementById('syncStatus');
+                        syncStatus.textContent = 'Chave removida do Firebase com sucesso!';
+                        syncStatus.style.color = '#27ae60';
+                        syncStatus.scrollIntoView({ behavior: 'smooth' });
                     } catch (firebaseError) {
                         console.error('Error removing from Firebase:', firebaseError);
+                        
+                        // Show error in sync status
+                        const syncStatus = document.getElementById('syncStatus');
+                        syncStatus.textContent = 'Error removing key from Firebase: ' + firebaseError.message;
+                        syncStatus.style.color = '#e74c3c';
+                        syncStatus.scrollIntoView({ behavior: 'smooth' });
                     }
                     
-                    await saveKeys();
+                    // Save to localStorage
+                    localStorage.setItem('validKeys', JSON.stringify(validKeys));
                     displayKeys();
-                    alert('Key removed successfully!');
+                    alert('Key successfully removed!');
                 } catch (error) {
                     console.error('Error removing key:', error);
                     alert('Error removing key. Please try again.');

@@ -302,7 +302,13 @@
                         activityLog.push(logEntry);
                         localStorage.setItem('activityLog', JSON.stringify(activityLog));
                         
-                        window.location.href = 'index.html';
+                        // Redirecionar para a página principal com um pequeno atraso para garantir que o localStorage seja atualizado
+                        submitButton.textContent = 'Acesso autorizado! Redirecionando...';
+                        submitButton.style.backgroundColor = '#27ae60';
+                        
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1000);
                         return false;
                     } else {
                         // Fallback to localStorage if not in Firebase
@@ -334,7 +340,13 @@
                             activityLog.push(logEntry);
                             localStorage.setItem('activityLog', JSON.stringify(activityLog));
                             
-                            window.location.href = 'index.html';
+                            // Redirecionar para a página principal com um pequeno atraso para garantir que o localStorage seja atualizado
+                            submitButton.textContent = 'Acesso autorizado! Redirecionando...';
+                            submitButton.style.backgroundColor = '#27ae60';
+                            
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 1000);
                             return false;
                         } else {
                             errorMessage.textContent = 'Invalid access key. Please try again.';
@@ -353,7 +365,14 @@
                     
                     if (validKeys.includes(accessKey)) {
                         localStorage.setItem('currentKey', accessKey);
-                        window.location.href = 'index.html';
+                        
+                        // Redirecionar para a página principal com um pequeno atraso para garantir que o localStorage seja atualizado
+                        submitButton.textContent = 'Acesso autorizado! Redirecionando...';
+                        submitButton.style.backgroundColor = '#27ae60';
+                        
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1000);
                         return false;
                     } else {
                         errorMessage.textContent = 'Invalid access key. Please try again.';
