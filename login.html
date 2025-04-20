@@ -196,6 +196,22 @@
     </div>
 
     <script>
+        // Função para gerar URL compartilhável com a chave de acesso
+        function generateShareableUrl(key) {
+            // Detectar se estamos em GitHub Pages ou ambiente local
+            let baseUrl = window.location.origin;
+            let pathName = window.location.pathname;
+            
+            // Se estiver em GitHub Pages, o caminho pode incluir o nome do repositório
+            // Vamos garantir que o caminho até o login.html seja preservado
+            let pathParts = pathName.split('/');
+            let loginPath = pathParts.slice(0, pathParts.length - 1).join('/') + '/login.html';
+            if (loginPath === '/login.html') loginPath = '/login.html'; // Caso esteja na raiz
+            
+            // Construir a URL completa com a chave como parâmetro
+            return `${baseUrl}${loginPath}?key=${encodeURIComponent(key)}`;
+        }
+        
         async function validateAccess(event) {
             event.preventDefault();
             let accessKey = document.getElementById('accessKey').value.trim();

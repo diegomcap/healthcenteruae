@@ -1,9 +1,9 @@
 // Sistema de segurança para garantir que todas as páginas só possam ser acessadas após validação do código de acesso
 
-// Função para sincronizar chaves com o GitHub Pages
+// Função para sincronizar chaves com o GitHub Pages ou qualquer ambiente web
 function syncKeysWithGitHub() {
-    // Verificar se estamos em ambiente GitHub Pages ou qualquer ambiente web
-    const isWebEnvironment = true; // Sempre considerar como ambiente web
+    // Sempre considerar como ambiente web para permitir compartilhamento entre dispositivos
+    const isWebEnvironment = true;
     
     // Usar parâmetros de URL para chaves em qualquer ambiente
     if (isWebEnvironment) {
@@ -20,6 +20,7 @@ function syncKeysWithGitHub() {
             if (!validKeys.includes(keyParam)) {
                 validKeys.push(keyParam);
                 localStorage.setItem('validKeys', JSON.stringify(validKeys));
+                console.log('Chave compartilhada adicionada com sucesso:', keyParam);
             }
             
             // Remover parâmetro da URL para segurança

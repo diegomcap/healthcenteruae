@@ -64,6 +64,47 @@
             align-items: center;
         }
         
+        .key-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .share-button {
+            background-color: #27ae60;
+            font-size: 0.8em;
+            padding: 5px 10px;
+        }
+        
+        .share-button:hover {
+            background-color: #219653;
+        }
+        
+        .share-url-container {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f1f8e9;
+            border-radius: 5px;
+            display: none;
+            text-align: left;
+        }
+        
+        .share-url {
+            word-break: break-all;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .copy-button {
+            background-color: #3498db;
+            font-size: 0.8em;
+            padding: 5px 10px;
+            margin-top: 5px;
+        }
+        
         button {
             background-color: #3498db;
             color: white;
@@ -108,6 +149,11 @@
             <h2>Current Access Keys</h2>
             <div class="key-list" id="currentKeys">
                 <!-- Keys will be populated here -->
+            </div>
+            <div class="share-url-container" id="shareUrlContainer">
+                <p>Shareable URL (can be used on any device):</p>
+                <div class="share-url" id="shareUrl"></div>
+                <button class="copy-button" id="copyUrlBtn">Copy URL</button>
             </div>
         </div>
         
@@ -176,11 +222,47 @@
                 keyItem.className = 'key-item';
                 keyItem.innerHTML = `
                     <span>${key}</span>
-                    <button onclick="removeKey('${key}')">Remove</button>
+                    <div class="key-actions">
+                        <button class="share-button" onclick="shareKey('${key}')">Share</button>
+                        <button onclick="removeKey('${key}')">Remove</button>
+                    </div>
                 `;
                 keyList.appendChild(keyItem);
             });
         }
+        
+        // Function to share a key
+        function shareKey(key) {
+            const shareUrl = generateShareableUrl(key);
+            const shareUrlContainer = document.getElementById('shareUrlContainer');
+            const shareUrlElement = document.getElementById('shareUrl');
+            
+            shareUrlElement.textContent = shareUrl;
+            shareUrlContainer.style.display = 'block';
+            
+            // Scroll to the share container
+            shareUrlContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Function to copy URL to clipboard
+        document.getElementById('copyUrlBtn').addEventListener('click', function() {
+            const shareUrl = document.getElementById('shareUrl').textContent;
+            navigator.clipboard.writeText(shareUrl)
+                .then(() => {
+                    alert('URL copied to clipboard!');
+                })
+                .catch(err => {
+                    console.error('Failed to copy URL: ', err);
+                    // Fallback for browsers that don't support clipboard API
+                    const tempInput = document.createElement('input');
+                    tempInput.value = shareUrl;
+                    document.body.appendChild(tempInput);
+                    tempInput.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempInput);
+                    alert('URL copied to clipboard!');
+                });
+        });
 
         // Detect if site is hosted on GitHub Pages or other web server
         const isHostedOnline = window.location.protocol === 'https:' || 
@@ -196,6 +278,22 @@
             // Remove 'admin.html' from the path and reconstruct
             pathParts.pop(); // Remove admin.html
             return baseUrl + pathParts.join('/') + '/';
+        }
+
+        // Função para gerar URL compartilhável com a chave de acesso
+        function generateShareableUrl(key) {
+            // Detectar se estamos em GitHub Pages ou ambiente local
+            let baseUrl = window.location.origin;
+            let pathName = window.location.pathname;
+            
+            // Se estiver em GitHub Pages, o caminho pode incluir o nome do repositório
+            // Vamos garantir que o caminho até o login.html seja preservado
+            let pathParts = pathName.split('/');
+            let loginPath = pathParts.slice(0, pathParts.length - 1).join('/') + '/login.html';
+            if (loginPath === '/login.html') loginPath = '/login.html'; // Caso esteja na raiz
+            
+            // Construir a URL completa com a chave como parâmetro
+            return `${baseUrl}${loginPath}?key=${encodeURIComponent(key)}`;
         }
 
         // Generate simple access key
