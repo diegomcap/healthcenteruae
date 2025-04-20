@@ -187,6 +187,16 @@
                               window.location.hostname !== 'localhost' && 
                               !window.location.hostname.includes('127.0.0.1') && 
                               window.location.hostname !== '';
+        
+        // Function to get the base URL that works in any environment
+        function getBaseUrl() {
+            let baseUrl = window.location.origin;
+            // Add repository path if on GitHub Pages
+            const pathParts = window.location.pathname.split('/');
+            // Remove 'admin.html' from the path and reconstruct
+            pathParts.pop(); // Remove admin.html
+            return baseUrl + pathParts.join('/') + '/';
+        }
 
         // Generate simple access key
         async function generateKey() {
@@ -198,19 +208,15 @@
                 const simpleGeneratedKey = document.getElementById('simpleGeneratedKey');
                 simpleGeneratedKey.style.display = 'block';
                 
-                // Create URL with the key for sharing (works in any environment)
-                let baseUrl = window.location.origin;
-                // Add repository path if on GitHub Pages
-                const pathParts = window.location.pathname.split('/');
-                // Remove 'admin.html' from the path and reconstruct
-                pathParts.pop(); // Remove admin.html
-                baseUrl += pathParts.join('/') + '/login.html';
+                // Create URL with the key for sharing using our helper function
+                const baseUrl = getBaseUrl() + 'login.html';
                 const accessUrl = baseUrl + '?key=' + key;
                 
                 // Always show the full URL to facilitate sharing
                 simpleGeneratedKey.innerHTML = `
                     <p>Generated key: <strong>${key}</strong></p>
                     <p>Share this URL with the client: <a href="${accessUrl}" target="_blank">${accessUrl}</a></p>
+                    <p>This URL will work on any device, even outside your local network.</p>
                     <button onclick="copyToClipboard('${accessUrl}')">Copy URL</button>
                 `;
                 
@@ -248,13 +254,8 @@
             try {
                 const newKey = Math.random().toString(36).substring(2, 8).toUpperCase();
                 // Send email using FormSubmit
-                // Create proper URL for GitHub Pages
-                let baseUrl = window.location.origin;
-                // Add repository path if on GitHub Pages
-                const pathParts = window.location.pathname.split('/');
-                // Remove 'admin.html' from the path and reconstruct
-                pathParts.pop(); // Remove admin.html
-                baseUrl += pathParts.join('/') + '/login.html';
+                // Create proper URL for GitHub Pages using our helper function
+                const baseUrl = getBaseUrl() + 'login.html';
                 const portalUrl = baseUrl + '?key=' + newKey;
                 
                 const response = await fetch(`https://formsubmit.co/ajax/${clientEmail}`, {

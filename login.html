@@ -209,12 +209,16 @@
             // Check URL parameters for GitHub Pages or any web environment
             const urlParams = new URLSearchParams(window.location.search);
             const keyParam = urlParams.get('key');
-            if (keyParam && !accessKey) {
-                // If we have a key in the URL and the field is empty, use the URL key
+            if (keyParam) {
+                // If we have a key in the URL, use it (even if the field is not empty)
                 document.getElementById('accessKey').value = keyParam;
                 accessKey = keyParam;
                 // Remove parameter from URL for security
                 window.history.replaceState({}, document.title, window.location.pathname);
+                // Auto-submit the form if key is provided in URL
+                setTimeout(() => {
+                    submitButton.click();
+                }, 500);
             }
             
             // Synchronize valid keys from localStorage
