@@ -206,6 +206,16 @@
             submitButton.disabled = true;
             submitButton.textContent = 'Verifying...';
             
+            // Verificar parâmetros de URL para GitHub Pages
+            const urlParams = new URLSearchParams(window.location.search);
+            const keyParam = urlParams.get('key');
+            if (keyParam && !accessKey) {
+                // Se temos uma chave na URL e o campo está vazio, use a chave da URL
+                document.getElementById('accessKey').value = keyParam;
+                // Remover parâmetro da URL para segurança
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            
             // Add a simple activity log
             const activityLog = JSON.parse(localStorage.getItem('activityLog') || '[]');
             const logEntry = {

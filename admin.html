@@ -191,12 +191,38 @@
                 displayKeys();
                 const simpleGeneratedKey = document.getElementById('simpleGeneratedKey');
                 simpleGeneratedKey.style.display = 'block';
-                simpleGeneratedKey.textContent = `Generated key: ${key}`;
+                
+                // Criar URL com a chave para compartilhamento (GitHub Pages)
+                const isGitHubPages = window.location.hostname.includes('github.io');
+                const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'index.html');
+                const accessUrl = baseUrl + '?key=' + key;
+                
+                if (isGitHubPages) {
+                    simpleGeneratedKey.innerHTML = `
+                        <p>Generated key: <strong>${key}</strong></p>
+                        <p>Share this URL with client: <a href="${accessUrl}" target="_blank">${accessUrl}</a></p>
+                        <button onclick="copyToClipboard('${accessUrl}')">Copy URL</button>
+                    `;
+                } else {
+                    simpleGeneratedKey.textContent = `Generated key: ${key}`;
+                }
+                
                 alert('Access key generated successfully!');
             } catch (error) {
                 console.error('Error generating key:', error);
                 alert('Error generating access key. Please try again.');
             }
+        }
+        
+        // Function to copy URL to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    alert('URL copied to clipboard!');
+                })
+                .catch(err => {
+                    console.error('Error copying text: ', err);
+                });
         }
 
         // Generate new access key and send to client

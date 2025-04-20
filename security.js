@@ -1,5 +1,33 @@
 // Sistema de segurança para garantir que todas as páginas só possam ser acessadas após validação do código de acesso
 
+// Função para sincronizar chaves com o GitHub Pages
+function syncKeysWithGitHub() {
+    // Verificar se estamos em ambiente GitHub Pages
+    const isGitHubPages = window.location.hostname.includes('github.io');
+    
+    // Se estamos no GitHub Pages, usar parâmetros de URL para chaves
+    if (isGitHubPages) {
+        // Tentar obter chaves de parâmetros de URL se disponíveis
+        const urlParams = new URLSearchParams(window.location.search);
+        const keyParam = urlParams.get('key');
+        
+        if (keyParam) {
+            // Armazenar a chave atual
+            localStorage.setItem('currentAccessKey', keyParam);
+            
+            // Adicionar à lista de chaves válidas se não existir
+            let validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
+            if (!validKeys.includes(keyParam)) {
+                validKeys.push(keyParam);
+                localStorage.setItem('validKeys', JSON.stringify(validKeys));
+            }
+            
+            // Remover parâmetro da URL para segurança
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }
+}
+
 // Função para verificar se o usuário está autenticado
 function checkPageSecurity() {
     // Lista de páginas que não precisam de autenticação
@@ -15,6 +43,9 @@ function checkPageSecurity() {
     if (publicPages.includes(currentPage)) {
         return true;
     }
+    
+    // Sincronizar chaves com GitHub Pages
+    syncKeysWithGitHub();
     
     const validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
     const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
