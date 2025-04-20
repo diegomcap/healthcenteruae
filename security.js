@@ -3,6 +3,7 @@
 // Função para sincronizar chaves com o GitHub Pages ou qualquer ambiente web
 function syncKeysWithGitHub() {
     // Sempre considerar como ambiente web para permitir compartilhamento entre dispositivos
+    // Isso garante que as chaves funcionem em qualquer lugar do mundo, não apenas na mesma rede
     const isWebEnvironment = true;
     
     // Usar parâmetros de URL para chaves em qualquer ambiente
@@ -12,10 +13,11 @@ function syncKeysWithGitHub() {
         const keyParam = urlParams.get('key');
         
         if (keyParam) {
-            // Armazenar a chave atual
+            // Armazenar a chave atual - funciona em qualquer dispositivo em qualquer lugar do mundo
             localStorage.setItem('currentAccessKey', keyParam);
             
             // Adicionar à lista de chaves válidas se não existir
+            // Isso permite que a mesma chave seja usada em diferentes dispositivos
             let validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
             if (!validKeys.includes(keyParam)) {
                 validKeys.push(keyParam);
@@ -23,7 +25,8 @@ function syncKeysWithGitHub() {
                 console.log('Chave compartilhada adicionada com sucesso:', keyParam);
             }
             
-            // Remover parâmetro da URL para segurança
+            // Remover parâmetro da URL para segurança, mas manter a chave ativa na sessão
+            // A chave permanece válida no localStorage mesmo após a remoção da URL
             window.history.replaceState({}, document.title, window.location.pathname);
             
             // Retornar true para indicar que uma chave foi sincronizada
