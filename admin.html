@@ -192,9 +192,8 @@
                 const simpleGeneratedKey = document.getElementById('simpleGeneratedKey');
                 simpleGeneratedKey.style.display = 'block';
                 
-                // Criar URL com a chave para compartilhamento (GitHub Pages)
-                const isGitHubPages = window.location.hostname.includes('github.io');
-                const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'index.html');
+                // Criar URL com a chave para compartilhamento (funciona em qualquer ambiente)
+                const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'login.html');
                 const accessUrl = baseUrl + '?key=' + key;
                 
                 if (isGitHubPages) {

@@ -2,11 +2,11 @@
 
 // Função para sincronizar chaves com o GitHub Pages
 function syncKeysWithGitHub() {
-    // Verificar se estamos em ambiente GitHub Pages
-    const isGitHubPages = window.location.hostname.includes('github.io');
+    // Verificar se estamos em ambiente GitHub Pages ou qualquer ambiente web
+    const isWebEnvironment = true; // Sempre considerar como ambiente web
     
-    // Se estamos no GitHub Pages, usar parâmetros de URL para chaves
-    if (isGitHubPages) {
+    // Usar parâmetros de URL para chaves em qualquer ambiente
+    if (isWebEnvironment) {
         // Tentar obter chaves de parâmetros de URL se disponíveis
         const urlParams = new URLSearchParams(window.location.search);
         const keyParam = urlParams.get('key');
@@ -24,8 +24,14 @@ function syncKeysWithGitHub() {
             
             // Remover parâmetro da URL para segurança
             window.history.replaceState({}, document.title, window.location.pathname);
+            
+            // Retornar true para indicar que uma chave foi sincronizada
+            return true;
         }
     }
+    
+    // Retornar false se nenhuma chave foi sincronizada
+    return false;
 }
 
 // Função para verificar se o usuário está autenticado

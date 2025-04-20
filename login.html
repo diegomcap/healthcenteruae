@@ -206,14 +206,25 @@
             submitButton.disabled = true;
             submitButton.textContent = 'Verifying...';
             
-            // Verificar parâmetros de URL para GitHub Pages
+            // Verificar parâmetros de URL para GitHub Pages ou qualquer ambiente web
             const urlParams = new URLSearchParams(window.location.search);
             const keyParam = urlParams.get('key');
             if (keyParam && !accessKey) {
                 // Se temos uma chave na URL e o campo está vazio, use a chave da URL
                 document.getElementById('accessKey').value = keyParam;
+                accessKey = keyParam;
                 // Remover parâmetro da URL para segurança
                 window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            
+            // Sincronizar chaves válidas do localStorage
+            try {
+                // Verificar se há chaves válidas armazenadas em localStorage
+                if (!localStorage.getItem('validKeys')) {
+                    localStorage.setItem('validKeys', JSON.stringify([]));
+                }
+            } catch (error) {
+                console.error('Error accessing localStorage:', error);
             }
             
             // Add a simple activity log
