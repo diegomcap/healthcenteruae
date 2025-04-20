@@ -195,6 +195,10 @@
         </form>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
     <script>
         // Função para gerar URL compartilhável com a chave de acesso
         function generateShareableUrl(key) {
@@ -237,16 +241,6 @@
                 }, 500);
             }
             
-            // Synchronize valid keys from localStorage
-            try {
-                // Check if there are valid keys stored in localStorage
-                if (!localStorage.getItem('validKeys')) {
-                    localStorage.setItem('validKeys', JSON.stringify([]));
-                }
-            } catch (error) {
-                console.error('Error accessing localStorage:', error);
-            }
-            
             // Add a simple activity log
             const activityLog = JSON.parse(localStorage.getItem('activityLog') || '[]');
             const logEntry = {
@@ -258,11 +252,30 @@
             if (!accessKey) {
                 errorMessage.textContent = 'Please enter an access key.';
                 errorMessage.style.display = 'block';
+                submitButton.disabled = false;
+                submitButton.textContent = 'Access System';
                 return false;
             }
 
             try {
-                let validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
+                // Initialize Firebase
+                const firebaseConfig = {
+                    apiKey: "AIzaSyCpNBqJC-bhe80e4C6ka7C8QDI6ZPdGM5o",
+                    authDomain: "assessmentdatabase-uae.firebaseapp.com",
+                    databaseURL: "https://assessmentdatabase-uae-default-rtdb.firebaseio.com",
+                    projectId: "assessmentdatabase-uae",
+                    storageBucket: "assessmentdatabase-uae.firebasestorage.app",
+                    messagingSenderId: "956944878345",
+                    appId: "1:956944878345:web:1920989b57a447bdc761d8",
+                    measurementId: "G-GFD44SSK9V"
+                };
+
+                // Initialize Firebase if not already initialized
+                if (!firebase.apps || !firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                    console.log('Firebase inicializado com sucesso');
+                }
+                const database = firebase.database();
                 const adminKey = '@dmin$tr@t0rK&yG&n';
 
                 // Check admin key
@@ -271,33 +284,86 @@
                     return false;
                 }
 
-                // Check already used keys
-                const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
-                if (usedKeys.includes(accessKey)) {
-                    window.location.href = 'already_used.html';
-                    return false;
-                }
-
-                // Update the list of valid keys before validating
-                validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
-
-                // Validate the access key
-                if (validKeys.includes(accessKey)) {
-                    // Don't mark the key as used at login, just store it for later use
-                    localStorage.setItem('currentAccessKey', accessKey);
+                // Check if key exists in Firebase
+                try {
+                    // First check if key is in Firebase
+                    const keysRef = database.ref('validKeys');
+                    console.log('Checking key in Firebase:', accessKey);
+                    const snapshot = await keysRef.child(accessKey).once('value');
+                    console.log('Firebase snapshot exists:', snapshot.exists());
                     
-                    // Log successful login
-                    logEntry.success = true;
-                    activityLog.push(logEntry);
-                    localStorage.setItem('activityLog', JSON.stringify(activityLog));
+                    if (snapshot.exists()) {
+                        // Key exists in Firebase, store it in localStorage
+                        localStorage.setItem('currentKey', accessKey);
+                        console.log('Valid key found in Firebase, redirecting to index.html');
+                        
+                        // Log successful login
+                        logEntry.success = true;
+                        activityLog.push(logEntry);
+                        localStorage.setItem('activityLog', JSON.stringify(activityLog));
+                        
+                        window.location.href = 'index.html';
+                        return false;
+                    } else {
+                        // Fallback to localStorage if not in Firebase
+                        const validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
+                        const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
+                        
+                        // Check already used keys
+                        if (usedKeys.includes(accessKey)) {
+                            window.location.href = 'already_used.html';
+                            return false;
+                        }
+                        
+                        // Validate the access key from localStorage
+                        if (validKeys.includes(accessKey)) {
+                            // Store the key for later use
+                            localStorage.setItem('currentKey', accessKey);
+                            
+                            // Also add it to Firebase for future use
+                            try {
+                                await keysRef.child(accessKey).set(true);
+                                console.log('Key added to Firebase successfully');
+                            } catch (firebaseWriteError) {
+                                console.error('Error writing to Firebase:', firebaseWriteError);
+                                // Continue even if Firebase write fails
+                            }
+                            
+                            // Log successful login
+                            logEntry.success = true;
+                            activityLog.push(logEntry);
+                            localStorage.setItem('activityLog', JSON.stringify(activityLog));
+                            
+                            window.location.href = 'index.html';
+                            return false;
+                        } else {
+                            errorMessage.textContent = 'Invalid access key. Please try again.';
+                            errorMessage.style.display = 'block';
+                            setTimeout(() => {
+                                errorMessage.style.display = 'none';
+                            }, 3000);
+                            submitButton.disabled = false;
+                            submitButton.textContent = 'Access System';
+                        }
+                    }
+                } catch (firebaseError) {
+                    console.error('Firebase error:', firebaseError);
+                    // Fallback to localStorage if Firebase fails
+                    const validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
                     
-                    window.location.href = 'index.html';
-                } else {
-                    errorMessage.textContent = 'Invalid access key. Please try again.';
-                    errorMessage.style.display = 'block';
-                    setTimeout(() => {
-                        errorMessage.style.display = 'none';
-                    }, 3000);
+                    if (validKeys.includes(accessKey)) {
+                        localStorage.setItem('currentKey', accessKey);
+                        window.location.href = 'index.html';
+                        return false;
+                    } else {
+                        errorMessage.textContent = 'Invalid access key. Please try again.';
+                        errorMessage.style.display = 'block';
+                        setTimeout(() => {
+                            errorMessage.style.display = 'none';
+                        }, 3000);
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Access System';
+                    }
                 }
             } catch (error) {
                 console.error('Error during validation:', error);
