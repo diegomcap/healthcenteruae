@@ -155,6 +155,8 @@
                 <div class="share-url" id="shareUrl"></div>
                 <button class="copy-button" id="copyUrlBtn">Copy URL</button>
             </div>
+            <button id="syncButton" onclick="syncKeysWithFirebase()" style="margin-top: 15px; background-color: #9b59b6;">Sync Keys with Firebase</button>
+            <div id="syncStatus" style="margin-top: 10px; font-size: 0.9em; color: #555;"></div>
         </div>
         
         <div class="section">
@@ -177,15 +179,69 @@
         </div>
     </div>
 
-     <script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <script>
         let validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
         const adminKey = 'ADMIN2024';
+        let database;
 
-        // Load keys from localStorage
-        function loadKeys() {
+        // Initialize Firebase
+        function initFirebase() {
+            const firebaseConfig = {
+                apiKey: "AIzaSyCpNBqJC-bhe80e4C6ka7C8QDI6ZPdGM5o",
+                authDomain: "assessmentdatabase-uae.firebaseapp.com",
+                databaseURL: "https://assessmentdatabase-uae-default-rtdb.firebaseio.com",
+                projectId: "assessmentdatabase-uae",
+                storageBucket: "assessmentdatabase-uae.firebasestorage.app",
+                messagingSenderId: "956944878345",
+                appId: "1:956944878345:web:1920989b57a447bdc761d8",
+                measurementId: "G-GFD44SSK9V"
+            };
+
+            // Initialize Firebase if not already initialized
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+                console.log('Firebase inicializado com sucesso');
+            }
+            database = firebase.database();
+        }
+
+        // Load keys from localStorage and Firebase
+        async function loadKeys() {
             try {
+                // First load from localStorage
                 const storedKeys = localStorage.getItem('validKeys');
                 validKeys = storedKeys ? JSON.parse(storedKeys) : [];
+                
+                // Then try to load from Firebase
+                try {
+                    const keysRef = database.ref('validKeys');
+                    const snapshot = await keysRef.once('value');
+                    
+                    if (snapshot.exists()) {
+                        const firebaseKeys = [];
+                        snapshot.forEach(childSnapshot => {
+                            firebaseKeys.push(childSnapshot.key);
+                        });
+                        
+                        // Merge keys from Firebase with localStorage
+                        firebaseKeys.forEach(key => {
+                            if (!validKeys.includes(key)) {
+                                validKeys.push(key);
+                            }
+                        });
+                        
+                        // Save merged keys back to localStorage
+                        localStorage.setItem('validKeys', JSON.stringify(validKeys));
+                        console.log('Keys loaded and merged from Firebase');
+                    }
+                } catch (firebaseError) {
+                    console.error('Error loading keys from Firebase:', firebaseError);
+                }
+                
                 displayKeys();
             } catch (error) {
                 console.error('Error loading keys:', error);
@@ -194,18 +250,90 @@
             }
         }
 
-        // Save keys to localStorage
-        function saveKeys() {
+        // Save keys to localStorage and Firebase
+        async function saveKeys() {
             try {
+                // Save to localStorage
                 localStorage.setItem('validKeys', JSON.stringify(validKeys));
+                
+                // Save to Firebase
+                try {
+                    const keysRef = database.ref('validKeys');
+                    
+                    // Clear existing keys and add current ones
+                    await keysRef.set(null);
+                    
+                    // Add each key to Firebase
+                    for (const key of validKeys) {
+                        await keysRef.child(key).set(true);
+                    }
+                    
+                    console.log('Keys saved to Firebase successfully');
+                } catch (firebaseError) {
+                    console.error('Error saving to Firebase:', firebaseError);
+                }
             } catch (error) {
                 console.error('Error saving keys:', error);
                 throw error;
             }
         }
 
+        // Sync keys with Firebase
+        async function syncKeysWithFirebase() {
+            const syncStatus = document.getElementById('syncStatus');
+            syncStatus.textContent = 'Syncing with Firebase...';
+            syncStatus.style.color = '#3498db';
+            
+            try {
+                const keysRef = database.ref('validKeys');
+                const snapshot = await keysRef.once('value');
+                
+                if (snapshot.exists()) {
+                    const firebaseKeys = [];
+                    snapshot.forEach(childSnapshot => {
+                        firebaseKeys.push(childSnapshot.key);
+                    });
+                    
+                    // Find keys in Firebase that aren't in localStorage
+                    const newKeys = firebaseKeys.filter(key => !validKeys.includes(key));
+                    
+                    // Find keys in localStorage that aren't in Firebase
+                    const localOnlyKeys = validKeys.filter(key => !firebaseKeys.includes(key));
+                    
+                    // Add new keys from Firebase to localStorage
+                    validKeys = [...validKeys, ...newKeys];
+                    
+                    // Add local keys to Firebase
+                    for (const key of localOnlyKeys) {
+                        await keysRef.child(key).set(true);
+                    }
+                    
+                    // Save updated keys to localStorage
+                    localStorage.setItem('validKeys', JSON.stringify(validKeys));
+                    
+                    // Update display
+                    displayKeys();
+                    
+                    syncStatus.textContent = `Sync complete! Added ${newKeys.length} new keys from Firebase.`;
+                    syncStatus.style.color = '#27ae60';
+                } else {
+                    // No keys in Firebase, push all local keys
+                    for (const key of validKeys) {
+                        await keysRef.child(key).set(true);
+                    }
+                    syncStatus.textContent = 'Sync complete! All local keys uploaded to Firebase.';
+                    syncStatus.style.color = '#27ae60';
+                }
+            } catch (error) {
+                console.error('Error syncing with Firebase:', error);
+                syncStatus.textContent = 'Error syncing with Firebase. Please try again.';
+                syncStatus.style.color = '#e74c3c';
+            }
+        }
+        
         // Load keys on page load
         window.onload = function() {
+            initFirebase();
             loadKeys();
         }
 
@@ -301,6 +429,8 @@
             try {
                 const key = Math.random().toString(36).substring(2, 8).toUpperCase();
                 validKeys.push(key);
+                
+                // Save to localStorage and Firebase
                 await saveKeys();
                 displayKeys();
                 const simpleGeneratedKey = document.getElementById('simpleGeneratedKey');
@@ -390,6 +520,8 @@ Health & Pilates Center Team`
 
                 // Add key to valid keys
                 validKeys.push(newKey);
+                
+                // Save to localStorage and Firebase
                 await saveKeys();
 
                 // Show success message
@@ -412,18 +544,29 @@ Health & Pilates Center Team`
             }
         }
 
-        // Remove key from localStorage
-        function removeKey(keyToRemove) {
-            validKeys = validKeys.filter(key => key !== keyToRemove);
-            saveKeys();
-            displayKeys();
-        }
-
-        // Remove key from localStorage
-        function removeKey(keyToRemove) {
-            validKeys = validKeys.filter(key => key !== keyToRemove);
-            saveKeys();
-            displayKeys();
+        // Remove key from localStorage and Firebase
+        async function removeKey(keyToRemove) {
+            if (confirm('Are you sure you want to remove this key?')) {
+                try {
+                    validKeys = validKeys.filter(key => key !== keyToRemove);
+                    
+                    // Remove from Firebase
+                    try {
+                        const keysRef = database.ref('validKeys');
+                        await keysRef.child(keyToRemove).remove();
+                        console.log('Key removed from Firebase successfully');
+                    } catch (firebaseError) {
+                        console.error('Error removing from Firebase:', firebaseError);
+                    }
+                    
+                    await saveKeys();
+                    displayKeys();
+                    alert('Key removed successfully!');
+                } catch (error) {
+                    console.error('Error removing key:', error);
+                    alert('Error removing key. Please try again.');
+                }
+            }
         }
     </script>
 </body>
