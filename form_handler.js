@@ -45,10 +45,27 @@ function handleFormSubmit(form) {
             // Mark access key as used after successful submission
             const currentKey = localStorage.getItem('currentAccessKey');
             if (currentKey) {
-                const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
-                if (!usedKeys.includes(currentKey)) {
-                    usedKeys.push(currentKey);
-                    localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
+                // Marca a chave como usada no Firebase e no localStorage
+                if (window.firebaseKeyManager) {
+                    try {
+                        window.firebaseKeyManager.markKeyAsUsed(currentKey)
+                            .then(() => console.log('Chave marcada como usada no Firebase:', currentKey))
+                            .catch(err => {
+                                console.error('Erro ao marcar chave como usada no Firebase:', err);
+                                // Fallback para localStorage
+                                const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
+                                if (!usedKeys.includes(currentKey)) {
+                                    usedKeys.push(currentKey);
+                                    localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
+                                }
+                            });
+                } else {
+                    // Fallback para localStorage se o Firebase não estiver disponível
+                    const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
+                    if (!usedKeys.includes(currentKey)) {
+                        usedKeys.push(currentKey);
+                        localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
+                    }
                 }
             }
             

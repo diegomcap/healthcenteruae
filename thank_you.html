@@ -107,16 +107,33 @@
         document.addEventListener('DOMContentLoaded', function() {
             const currentKey = localStorage.getItem('currentAccessKey');
             if (currentKey) {
-                // Obtém a lista de chaves utilizadas
-                const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
-                
-                // Adiciona a chave atual à lista de chaves utilizadas se ainda não estiver lá
-                if (!usedKeys.includes(currentKey)) {
-                    usedKeys.push(currentKey);
-                    localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
+                // Marca a chave como usada no Firebase e no localStorage
+                if (window.firebaseKeyManager) {
+                    // Aguarda o carregamento do Firebase
+                    setTimeout(async () => {
+                        try {
+                            await window.firebaseKeyManager.markKeyAsUsed(currentKey);
+                            console.log('Chave marcada como usada no Firebase:', currentKey);
+                        } catch (error) {
+                            console.error('Erro ao marcar chave como usada no Firebase:', error);
+                            // Fallback para localStorage
+                            const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
+                            if (!usedKeys.includes(currentKey)) {
+                                usedKeys.push(currentKey);
+                                localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
+                            }
+                        }
+                    }, 1000);
+                } else {
+                    // Fallback para localStorage se o Firebase não estiver disponível
+                    const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
+                    if (!usedKeys.includes(currentKey)) {
+                        usedKeys.push(currentKey);
+                        localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
+                    }
                 }
             }
-        });
+        });}
     </script>
     <div class="container">
         <div class="success-icon">✓</div>

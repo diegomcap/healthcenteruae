@@ -28,17 +28,37 @@ async function syncKeysWithGitHub() {
             // Armazenar a chave atual - funciona em qualquer dispositivo em qualquer lugar do mundo
             localStorage.setItem('currentAccessKey', keyParam);
             
-            // Adicionar à lista de chaves válidas no Firebase se não existir
-            // Isso permite que a mesma chave seja usada em diferentes dispositivos
+            // Verificar se a chave já está marcada como usada no Firebase
+            let isUsed = false;
             if (window.firebaseKeyManager) {
-                await window.firebaseKeyManager.addValidKey(keyParam);
+                try {
+                    const usedKeys = await window.firebaseKeyManager.getUsedKeys();
+                    isUsed = usedKeys.includes(keyParam);
+                } catch (error) {
+                    console.error('Erro ao verificar chaves usadas:', error);
+                    // Fallback para localStorage
+                    const localUsedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
+                    isUsed = localUsedKeys.includes(keyParam);
+                }
             } else {
-                // Fallback para localStorage se o Firebase não estiver disponível
-                let validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
-                if (!validKeys.includes(keyParam)) {
-                    validKeys.push(keyParam);
-                    localStorage.setItem('validKeys', JSON.stringify(validKeys));
-                    console.log('Chave compartilhada adicionada com sucesso (localStorage):', keyParam);
+                // Fallback para localStorage
+                const localUsedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
+                isUsed = localUsedKeys.includes(keyParam);
+            }
+            
+            // Se a chave não estiver marcada como usada, adicionar à lista de chaves válidas
+            if (!isUsed) {
+                if (window.firebaseKeyManager) {
+                    await window.firebaseKeyManager.addValidKey(keyParam);
+                    console.log('Chave adicionada ao Firebase com sucesso:', keyParam);
+                } else {
+                    // Fallback para localStorage se o Firebase não estiver disponível
+                    let validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
+                    if (!validKeys.includes(keyParam)) {
+                        validKeys.push(keyParam);
+                        localStorage.setItem('validKeys', JSON.stringify(validKeys));
+                        console.log('Chave compartilhada adicionada com sucesso (localStorage):', keyParam);
+                    }
                 }
             }
             
@@ -80,8 +100,30 @@ async function checkPageSecurity() {
     
     if (window.firebaseKeyManager) {
         try {
+            // Obter chaves válidas do Firebase
             validKeys = await window.firebaseKeyManager.getValidKeys();
+            
+            // Sincronizar chaves válidas do localStorage com o Firebase
+            const localValidKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
+            let syncedNewKeys = 0;
+            
+            // Adicionar chaves locais que não estão no Firebase
+            for (const key of localValidKeys) {
+                if (!validKeys.includes(key)) {
+                    await window.firebaseKeyManager.addValidKey(key);
+                    syncedNewKeys++;
+                }
+            }
+            
+            // Atualizar localStorage com chaves do Firebase
+            localStorage.setItem('validKeys', JSON.stringify(validKeys));
+            console.log(`Sincronização completa! Adicionadas ${syncedNewKeys} novas chaves ao Firebase.`);
+            
+            // Obter chaves usadas do Firebase
             usedKeys = await window.firebaseKeyManager.getUsedKeys();
+            
+            // Atualizar localStorage com chaves usadas do Firebase
+            localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
             console.log('Chaves obtidas do Firebase com sucesso');
         } catch (error) {
             console.error('Erro ao obter chaves do Firebase:', error);
@@ -110,8 +152,11 @@ async function checkPageSecurity() {
     }
 
     // Se a chave já foi usada, redireciona para página de chave já utilizada
-    // Isso permite que o usuário complete o formulário antes de marcar a chave como usada
-    if (usedKeys.includes(currentKey) && !window.location.pathname.includes('thank_you.html')) {
+    // Mas apenas se não estiver na página de agradecimento ou nos formulários de avaliação
+    const assessmentPages = ['physiotherapy_assessment_form.html', 'pilates_assessment_form.html', 'consent_terms_physiotherapy.html', 'consent_terms_pilates.html', 'thank_you.html'];
+    const isAssessmentPage = assessmentPages.some(page => window.location.pathname.includes(page));
+    
+    if (usedKeys.includes(currentKey) && !isAssessmentPage) {
         window.location.href = 'already_used.html';
         return false;
     }
