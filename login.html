@@ -204,22 +204,22 @@
             // Disable the submit button to prevent multiple submissions
             const submitButton = document.querySelector('button[type="submit"]');
             submitButton.disabled = true;
-            submitButton.textContent = 'Verificando...';
+            submitButton.textContent = 'Sign-in...';
             
-            // Verificar parâmetros de URL para GitHub Pages ou qualquer ambiente web
+            // Check URL parameters for GitHub Pages or any web environment
             const urlParams = new URLSearchParams(window.location.search);
             const keyParam = urlParams.get('key');
             if (keyParam && !accessKey) {
-                // Se temos uma chave na URL e o campo está vazio, use a chave da URL
+                // If we have a key in the URL and the field is empty, use the URL key
                 document.getElementById('accessKey').value = keyParam;
                 accessKey = keyParam;
-                // Remover parâmetro da URL para segurança
+                // Remove parameter from URL for security
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
             
-            // Sincronizar chaves válidas do localStorage
+            // Synchronize valid keys from localStorage
             try {
-                // Verificar se há chaves válidas armazenadas em localStorage
+                // Check if there are valid keys stored in localStorage
                 if (!localStorage.getItem('validKeys')) {
                     localStorage.setItem('validKeys', JSON.stringify([]));
                 }
@@ -245,25 +245,25 @@
                 let validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
                 const adminKey = '@dmin$tr@t0rK&yG&n';
 
-                // Verifica chave de admin
+                // Check admin key
                 if (accessKey === adminKey) {
                     window.location.href = 'admin.html';
                     return false;
                 }
 
-                // Verifica chaves já utilizadas
+                // Check already used keys
                 const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
                 if (usedKeys.includes(accessKey)) {
                     window.location.href = 'already_used.html';
                     return false;
                 }
 
-                // Atualiza a lista de chaves válidas antes de validar
+                // Update the list of valid keys before validating
                 validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
 
-                // Valida a chave de acesso
+                // Validate the access key
                 if (validKeys.includes(accessKey)) {
-                    // Não marca a chave como usada no login, apenas armazena para uso posterior
+                    // Don't mark the key as used at login, just store it for later use
                     localStorage.setItem('currentAccessKey', accessKey);
                     
                     // Log successful login

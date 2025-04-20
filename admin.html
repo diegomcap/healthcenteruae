@@ -198,21 +198,21 @@
                 const simpleGeneratedKey = document.getElementById('simpleGeneratedKey');
                 simpleGeneratedKey.style.display = 'block';
                 
-                // Criar URL com a chave para compartilhamento (funciona em qualquer ambiente)
+                // Create URL with the key for sharing (works in any environment)
                 const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'login.html');
                 const accessUrl = baseUrl + '?key=' + key;
                 
-                // Sempre mostrar a URL completa para facilitar compartilhamento
+                // Always show the full URL to facilitate sharing
                 simpleGeneratedKey.innerHTML = `
-                    <p>Chave gerada: <strong>${key}</strong></p>
-                    <p>Compartilhe esta URL com o cliente: <a href="${accessUrl}" target="_blank">${accessUrl}</a></p>
-                    <button onclick="copyToClipboard('${accessUrl}')">Copiar URL</button>
+                    <p>Generated key: <strong>${key}</strong></p>
+                    <p>Share this URL with the client: <a href="${accessUrl}" target="_blank">${accessUrl}</a></p>
+                    <button onclick="copyToClipboard('${accessUrl}')">Copy URL</button>
                 `;
                 
-                alert('Chave de acesso gerada com sucesso!');
+                alert('Access key generated successfully!');
             } catch (error) {
                 console.error('Error generating key:', error);
-                alert('Erro ao gerar chave de acesso. Por favor, tente novamente.');
+                alert('Error generating access key. Please try again.');
             }
         }
         
@@ -237,7 +237,7 @@
 
             const generatedKeyDiv = document.getElementById('generatedKey');
             generatedKeyDiv.style.display = 'block';
-            generatedKeyDiv.innerHTML = 'Enviando email... Por favor, aguarde.';
+            generatedKeyDiv.innerHTML = 'Sending email... Please wait.';
             generatedKeyDiv.style.backgroundColor = '#fff3cd';
             
             try {
@@ -261,7 +261,7 @@
 Thank you for choosing Health & Pilates Center for your wellness journey.
 
 Your Assessment Portal Access Information:
-- Portal URL: https://www.healthcenteruae.com/healthcenteruae/login.html
+- Portal URL: ${window.location.origin + window.location.pathname.replace('admin.html', 'login.html')}?key=${newKey}
 - Access Key: ${newKey}
 
 Please save this access key for future portal access.
@@ -282,8 +282,8 @@ Health & Pilates Center Team`
                 // Show success message
                 generatedKeyDiv.style.backgroundColor = '#d4edda';
                 generatedKeyDiv.innerHTML = `<div style="color: #155724">
-                    ✓ Email enviado com sucesso para ${clientEmail}<br>
-                    Chave de acesso gerada: ${newKey}
+                    ✓ Email successfully sent to ${clientEmail}<br>
+                    Generated access key: ${newKey}
                 </div>`;
 
                 // Update display
@@ -293,9 +293,9 @@ Health & Pilates Center Team`
                 console.error('Erro:', error);
                 generatedKeyDiv.style.backgroundColor = '#f8d7da';
                 generatedKeyDiv.innerHTML = `<div style="color: #721c24">
-                    ✕ Erro ao enviar email: ${error.message}<br>
-                    Por favor, verifique o endereço de email e tente novamente.
-                </div>`;
+                    ✕ Error sending email: ${error.message}<br>
+                    Please verify the email address and try again.
+                </div>`;}]}}}
             }
         }
 

@@ -5,24 +5,24 @@ function checkAuthentication() {
     const currentKey = localStorage.getItem('currentAccessKey');
     const adminKey = 'ADMIN2024';
 
-    // Se não houver chave de acesso armazenada
+    // If there is no stored access key
     if (!currentKey) {
         window.location.href = 'login.html';
         return false;
     }
 
-    // Se for a chave de admin, permite acesso
+    // If it's the admin key, allow access
     if (currentKey === adminKey) {
         return true;
     }
 
-    // Se a chave já foi usada, redireciona para página de chave já utilizada
+    // If the key has already been used, redirect to the already used key page
     if (usedKeys.includes(currentKey)) {
         window.location.href = 'already_used.html';
         return false;
     }
 
-    // Se a chave não for válida, redireciona para o login
+    // If the key is not valid, redirect to login
     if (!validKeys.includes(currentKey)) {
         window.location.href = 'login.html';
         return false;
