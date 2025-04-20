@@ -182,6 +182,12 @@
             });
         }
 
+        // Detect if site is hosted on GitHub Pages or other web server
+        const isHostedOnline = window.location.protocol === 'https:' || 
+                              window.location.hostname !== 'localhost' && 
+                              !window.location.hostname.includes('127.0.0.1') && 
+                              window.location.hostname !== '';
+
         // Generate simple access key
         async function generateKey() {
             try {
@@ -196,20 +202,17 @@
                 const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'login.html');
                 const accessUrl = baseUrl + '?key=' + key;
                 
-                if (isGitHubPages) {
-                    simpleGeneratedKey.innerHTML = `
-                        <p>Generated key: <strong>${key}</strong></p>
-                        <p>Share this URL with client: <a href="${accessUrl}" target="_blank">${accessUrl}</a></p>
-                        <button onclick="copyToClipboard('${accessUrl}')">Copy URL</button>
-                    `;
-                } else {
-                    simpleGeneratedKey.textContent = `Generated key: ${key}`;
-                }
+                // Sempre mostrar a URL completa para facilitar compartilhamento
+                simpleGeneratedKey.innerHTML = `
+                    <p>Chave gerada: <strong>${key}</strong></p>
+                    <p>Compartilhe esta URL com o cliente: <a href="${accessUrl}" target="_blank">${accessUrl}</a></p>
+                    <button onclick="copyToClipboard('${accessUrl}')">Copiar URL</button>
+                `;
                 
-                alert('Access key generated successfully!');
+                alert('Chave de acesso gerada com sucesso!');
             } catch (error) {
                 console.error('Error generating key:', error);
-                alert('Error generating access key. Please try again.');
+                alert('Erro ao gerar chave de acesso. Por favor, tente novamente.');
             }
         }
         

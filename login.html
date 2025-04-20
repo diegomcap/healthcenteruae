@@ -198,13 +198,13 @@
     <script>
         async function validateAccess(event) {
             event.preventDefault();
-            const accessKey = document.getElementById('accessKey').value.trim();
+            let accessKey = document.getElementById('accessKey').value.trim();
             const errorMessage = document.getElementById('errorMessage');
             
             // Disable the submit button to prevent multiple submissions
             const submitButton = document.querySelector('button[type="submit"]');
             submitButton.disabled = true;
-            submitButton.textContent = 'Verifying...';
+            submitButton.textContent = 'Verificando...';
             
             // Verificar parâmetros de URL para GitHub Pages ou qualquer ambiente web
             const urlParams = new URLSearchParams(window.location.search);
