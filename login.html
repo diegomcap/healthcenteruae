@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Access Portal - Health & Pilates Center</title>
+    <!-- Auth0 SDK -->
+    <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -185,227 +187,58 @@
         <li></li>
     </div>
     <div class="container">
-        <h1>Access Portal</h1>
-        <form id="loginForm" onsubmit="return validateAccess(event)">
+        <h1>Health & Pilates Center</h1>
+        <p class="subtitle">Portal de Acesso</p>
+        
+        <div id="accessKeyForm">
             <div class="form-group">
-                <input type="password" id="accessKey" placeholder="Enter access key" required>
+                <input type="text" id="accessKey" placeholder="Digite sua chave de acesso" autocomplete="off">
             </div>
-            <button type="submit">Access System</button>
-            <p id="errorMessage" class="error-message">Invalid access key. Please try again.</p>
-        </form>
+            <button id="submitBtn">Acessar</button>
+            <div class="error-message" id="errorMessage">Chave de acesso inválida. Por favor, tente novamente.</div>
+        </div>
+        
+        <div class="admin-link">
+            <a href="admin.html">Painel de Administração</a>
+        </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    
     <script>
-        // Função para gerar URL compartilhável com a chave de acesso
-        function generateShareableUrl(key) {
-            // Detectar se estamos em GitHub Pages ou ambiente local
-            let baseUrl = window.location.origin;
-            let pathName = window.location.pathname;
+        // Função para verificar a chave de acesso
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            const accessKey = document.getElementById('accessKey').value.trim();
             
-            // Se estiver em GitHub Pages, o caminho pode incluir o nome do repositório
-            // Vamos garantir que o caminho até o login.html seja preservado
-            let pathParts = pathName.split('/');
-            let loginPath = pathParts.slice(0, pathParts.length - 1).join('/') + '/login.html';
-            if (loginPath === '/login.html') loginPath = '/login.html'; // Caso esteja na raiz
-            
-            // Construir a URL completa com a chave como parâmetro
-            return `${baseUrl}${loginPath}?key=${encodeURIComponent(key)}`;
-        }
-        
-        async function validateAccess(event) {
-            event.preventDefault();
-            let accessKey = document.getElementById('accessKey').value.trim();
-            const errorMessage = document.getElementById('errorMessage');
-            
-            // Disable the submit button to prevent multiple submissions
-            const submitButton = document.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Sign-in...';
-            
-            // Check URL parameters for GitHub Pages or any web environment
-            const urlParams = new URLSearchParams(window.location.search);
-            const keyParam = urlParams.get('key');
-            if (keyParam) {
-                // If we have a key in the URL, use it (even if the field is not empty)
-                document.getElementById('accessKey').value = keyParam;
-                accessKey = keyParam;
-                // Remove parameter from URL for security
-                window.history.replaceState({}, document.title, window.location.pathname);
-                // Auto-submit the form if key is provided in URL
-                setTimeout(() => {
-                    submitButton.click();
-                }, 500);
-            }
-            
-            // Add a simple activity log
-            const activityLog = JSON.parse(localStorage.getItem('activityLog') || '[]');
-            const logEntry = {
-                timestamp: new Date().toISOString(),
-                action: 'login_attempt',
-                success: false
-            };
-
             if (!accessKey) {
-                errorMessage.textContent = 'Please enter an access key.';
-                errorMessage.style.display = 'block';
-                submitButton.disabled = false;
-                submitButton.textContent = 'Access System';
-                return false;
+                document.getElementById('errorMessage').style.display = 'block';
+                return;
             }
-
-            try {
-                // Initialize Firebase
-                const firebaseConfig = {
-                    apiKey: "AIzaSyCpNBqJC-bhe80e4C6ka7C8QDI6ZPdGM5o",
-                    authDomain: "assessmentdatabase-uae.firebaseapp.com",
-                    databaseURL: "https://assessmentdatabase-uae-default-rtdb.firebaseio.com",
-                    projectId: "assessmentdatabase-uae",
-                    storageBucket: "assessmentdatabase-uae.firebasestorage.app",
-                    messagingSenderId: "956944878345",
-                    appId: "1:956944878345:web:1920989b57a447bdc761d8",
-                    measurementId: "G-GFD44SSK9V"
-                };
-
-                // Initialize Firebase if not already initialized
-                if (!firebase.apps || !firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                    console.log('Firebase inicializado com sucesso');
-                }
-                const database = firebase.database();
-                const adminKey = '@dmin$tr@t0rK&yG&n';
-
-                // Check admin key
-                if (accessKey === adminKey) {
-                    window.location.href = 'admin.html';
-                    return false;
-                }
-
-                // Check if key exists in Firebase
-                try {
-                    // First check if key is in Firebase
-                    const keysRef = database.ref('validKeys');
-                    console.log('Checking key in Firebase:', accessKey);
-                    const snapshot = await keysRef.child(accessKey).once('value');
-                    console.log('Firebase snapshot exists:', snapshot.exists());
-                    
-                    if (snapshot.exists()) {
-                        // Key exists in Firebase, store it in localStorage and sessionStorage for redundancy
-                        localStorage.setItem('currentAccessKey', accessKey);
-                        sessionStorage.setItem('currentAccessKey', accessKey);
-                        console.log('Valid key found in Firebase, redirecting to index.html');
-                        
-                        // Log successful login
-                        logEntry.success = true;
-                        activityLog.push(logEntry);
-                        localStorage.setItem('activityLog', JSON.stringify(activityLog));
-                        
-                        // Adicionar a chave ao localStorage validKeys também para redundância
-                        const validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
-                        if (!validKeys.includes(accessKey)) {
-                            validKeys.push(accessKey);
-                            localStorage.setItem('validKeys', JSON.stringify(validKeys));
-                        }
-                        
-                        // Redirecionar para a página principal com um pequeno atraso para garantir que o localStorage seja atualizado
-                        submitButton.textContent = 'Authorized access! Redirecting...';
-                        submitButton.style.backgroundColor = '#27ae60';
-                        
-                        // Definir um cookie como método adicional de persistência
-                        document.cookie = `currentAccessKey=${accessKey}; path=/; max-age=86400`; // válido por 1 dia
-                        
-                        setTimeout(() => {
-                            window.location.href = 'index.html?auth=true&key=' + encodeURIComponent(accessKey);
-                        }, 1000);
-                        return false;
-                    } else {
-                        // Fallback to localStorage if not in Firebase
-                        const validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
-                        
-                        // Validate the access key from localStorage
-                        if (validKeys.includes(accessKey)) {
-                            // Store the key in multiple storage mechanisms for redundância
-                            localStorage.setItem('currentAccessKey', accessKey);
-                            sessionStorage.setItem('currentAccessKey', accessKey);
-                            document.cookie = `currentAccessKey=${accessKey}; path=/; max-age=86400`; // válido por 1 dia
-                            
-                            // Also add it to Firebase for future use
-                            try {
-                                await keysRef.child(accessKey).set(true);
-                                console.log('Key added to Firebase successfully');
-                            } catch (firebaseWriteError) {
-                                console.error('Error writing to Firebase:', firebaseWriteError);
-                                // Continue even if Firebase write fails
-                            }
-                            
-                            // Log successful login
-                            logEntry.success = true;
-                            activityLog.push(logEntry);
-                            localStorage.setItem('activityLog', JSON.stringify(activityLog));
-                            
-                            // Redirecionar para a página principal com um pequeno atraso para garantir que o localStorage seja atualizado
-                            submitButton.textContent = 'Authorized access! Redirecting...';
-                            submitButton.style.backgroundColor = '#27ae60';
-                            
-                            setTimeout(() => {
-                                window.location.href = 'index.html?auth=true&key=' + encodeURIComponent(accessKey);
-                            }, 1000);
-                            return false;
-                        } else {
-                            errorMessage.textContent = 'Invalid access key. Please try again.';
-                            errorMessage.style.display = 'block';
-                            setTimeout(() => {
-                                errorMessage.style.display = 'none';
-                            }, 3000);
-                            submitButton.disabled = false;
-                            submitButton.textContent = 'Access System';
-                        }
-                    }
-                } catch (firebaseError) {
-                    console.error('Firebase error:', firebaseError);
-                    // Fallback to localStorage if Firebase fails
-                    const validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
-                    
-                    if (validKeys.includes(accessKey)) {
-                        localStorage.setItem('currentAccessKey', accessKey);
-                        
-                        // Redirecionar para a página principal com um pequeno atraso para garantir que o localStorage seja atualizado
-                        submitButton.textContent = 'Authorized access! Redirecting...';
-                        submitButton.style.backgroundColor = '#27ae60';
-                        
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 1000);
-                        return false;
-                    } else {
-                        errorMessage.textContent = 'Invalid access key. Please try again.';
-                        errorMessage.style.display = 'block';
-                        setTimeout(() => {
-                            errorMessage.style.display = 'none';
-                        }, 3000);
-                        submitButton.disabled = false;
-                        submitButton.textContent = 'Access System';
-                    }
-                }
-            } catch (error) {
-                console.error('Error during validation:', error);
-                errorMessage.textContent = 'Error validating key. Please try again later.';
-                errorMessage.style.display = 'block';
+            
+            // Verifica se a chave existe no localStorage
+            const keys = JSON.parse(localStorage.getItem('accessKeys') || '[]');
+            
+            if (keys.includes(accessKey)) {
+                // Verifica se a chave já foi usada
+                const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
                 
-                // Log error
-                logEntry.error = error.message;
-                activityLog.push(logEntry);
-                localStorage.setItem('activityLog', JSON.stringify(activityLog));
-                
-                // Re-enable the submit button
-                submitButton.disabled = false;
-                submitButton.textContent = 'Access System';
+                if (usedKeys.includes(accessKey)) {
+                    window.location.href = 'already_used.html';
+                } else {
+                    // Marca a chave como usada
+                    usedKeys.push(accessKey);
+                    localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
+                    
+                    // Redireciona para a página de opções
+                    window.location.href = 'assessment_options.html';
+                }
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
             }
-            return false;
-        }
+        });
+        
+        // Limpa a mensagem de erro quando o usuário começa a digitar
+        document.getElementById('accessKey').addEventListener('input', function() {
+            document.getElementById('errorMessage').style.display = 'none';
+        });
     </script>
 </body>
 </html>

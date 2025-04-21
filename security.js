@@ -12,76 +12,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Função para sincronizar chaves com o Firebase e GitHub Pages
+// Função simplificada para sincronizar chaves com o sistema local
 async function syncKeysWithGitHub() {
-    // Sempre considerar como ambiente web para permitir compartilhamento entre dispositivos
-    // Isso garante que as chaves funcionem em qualquer lugar do mundo, não apenas na mesma rede
-    const isWebEnvironment = true;
-    let syncedNewKeys = 0; // Inicializa contador de chaves sincronizadas
+    // Verificar parâmetros de URL para chaves
+    const urlParams = new URLSearchParams(window.location.search);
+    const keyParam = urlParams.get('key');
     
-    // Usar parâmetros de URL para chaves em qualquer ambiente
-    if (isWebEnvironment) {
-        // Tentar obter chaves de parâmetros de URL se disponíveis
-        const urlParams = new URLSearchParams(window.location.search);
-        const keyParam = urlParams.get('key');
+    if (keyParam) {
+        console.log('Chave encontrada na URL:', keyParam);
+        // Armazenar a chave em todos os mecanismos de armazenamento para redundância
+        localStorage.setItem('currentAccessKey', keyParam);
+        sessionStorage.setItem('currentAccessKey', keyParam);
+        document.cookie = `currentAccessKey=${keyParam}; path=/; max-age=2592000`; // válido por 30 dias
         
-        if (keyParam) {
-            // Armazenar a chave atual - funciona em qualquer dispositivo em qualquer lugar do mundo
-            localStorage.setItem('currentAccessKey', keyParam);
-            sessionStorage.setItem('currentAccessKey', keyParam); // Garantir que a chave esteja em todos os storages
-            document.cookie = `currentAccessKey=${keyParam}; path=/; max-age=86400`; // válido por 1 dia
-            
-            // Verificar se a chave já está marcada como usada no Firebase
-            let isUsed = false;
-            let validKeys = [];
-            if (window.firebaseKeyManager) {
-                try {
-                    const usedKeys = await window.firebaseKeyManager.getUsedKeys();
-                    isUsed = usedKeys.includes(keyParam);
-                    // Obter também as chaves válidas para verificar se já existe
-                    validKeys = await window.firebaseKeyManager.getValidKeys();
-                } catch (error) {
-                    console.error('Erro ao verificar chaves usadas:', error);
-                    // Fallback para localStorage
-                    const localUsedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
-                    isUsed = localUsedKeys.includes(keyParam);
-                    validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
-                }
-            } else {
-                // Fallback para localStorage
-                const localUsedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
-                isUsed = localUsedKeys.includes(keyParam);
-                validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
-            }
-            
-            // Se a chave não estiver marcada como usada e não estiver já na lista de válidas, adicionar à lista de chaves válidas
-            if (!isUsed && !validKeys.includes(keyParam)) {
-                if (window.firebaseKeyManager) {
-                    await window.firebaseKeyManager.addValidKey(keyParam);
-                    syncedNewKeys++; // Incrementa o contador quando uma nova chave é adicionada
-                    console.log('Chave adicionada ao Firebase com sucesso:', keyParam);
-                } else {
-                    // Fallback para localStorage se o Firebase não estiver disponível
-                    let localValidKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
-                    if (!localValidKeys.includes(keyParam)) {
-                        localValidKeys.push(keyParam);
-                        localStorage.setItem('validKeys', JSON.stringify(localValidKeys));
-                        syncedNewKeys++; // Incrementa o contador mesmo quando usando localStorage
-                        console.log('Chave compartilhada adicionada com sucesso (localStorage):', keyParam);
-                    }
-                }
-            }
-            
-            // Remover parâmetro da URL para segurança, mas manter a chave ativa na sessão
-            // A chave permanece válida no banco de dados mesmo após a remoção da URL
-            window.history.replaceState({}, document.title, window.location.pathname);
-            
-            // Registrar quantas chaves foram sincronizadas
-            console.log(`Sincronização completa! Adicionadas ${syncedNewKeys} novas chaves ao Firebase.`);
-            
-            // Retornar true para indicar que uma chave foi sincronizada
-            return true;
+        // Adicionar à lista de chaves válidas se ainda não estiver lá
+        let validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
+        if (!validKeys.includes(keyParam)) {
+            validKeys.push(keyParam);
+            localStorage.setItem('validKeys', JSON.stringify(validKeys));
+            console.log('Nova chave adicionada à lista de chaves válidas:', keyParam);
         }
+        
+        // Verificar se a chave já está marcada como usada
+        const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
+        const isUsed = usedKeys.includes(keyParam);
+        console.log('A chave está na lista de usadas?', isUsed);
+        
+        // Remover parâmetro da URL para segurança, mas manter a chave ativa
+        window.history.replaceState({}, document.title, window.location.pathname);
+        console.log('Sincronização completa! Chave processada com sucesso.');
+        
+        // Retornar true para indicar que uma chave foi sincronizada
+        return true;
     }
     
     // Retornar false se nenhuma chave foi sincronizada
@@ -93,14 +55,24 @@ async function checkPageSecurity() {
     // Lista de páginas que não precisam de autenticação
     const publicPages = [
         'login.html',
-        'already_used.html'
+        'already_used.html',
+        'index.html',
+        'project_overview.html',
+        'assessment_options.html',
+        'physiotherapy_assessment_form.html',
+        'pilates_assessment_form.html',
+        'consent_terms_physiotherapy.html',
+        'consent_terms_pilates.html',
+        'thank_you.html'
     ];
     
     // Obtém o nome da página atual
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    console.log('Verificando segurança para a página:', currentPage);
     
     // Se a página atual estiver na lista de páginas públicas, não precisa verificar autenticação
     if (publicPages.includes(currentPage)) {
+        console.log('Página pública, não precisa de autenticação');
         return true;
     }
     
@@ -110,66 +82,37 @@ async function checkPageSecurity() {
     const authParam = urlParams.get('auth');
     
     // Se temos parâmetros de autenticação na URL, usar essa chave
-    if (keyParam && authParam === 'true') {
+    if (keyParam) {
+        console.log('Parâmetros de autenticação encontrados na URL');
+        // Armazenar a chave em todos os mecanismos de armazenamento para redundância
         localStorage.setItem('currentAccessKey', keyParam);
         sessionStorage.setItem('currentAccessKey', keyParam);
-        document.cookie = `currentAccessKey=${keyParam}; path=/; max-age=86400`; // válido por 1 dia
+        document.cookie = `currentAccessKey=${keyParam}; path=/; max-age=2592000`; // válido por 30 dias
         
-        // Remover parâmetros da URL para segurança
-        window.history.replaceState({}, document.title, window.location.pathname);
+        // Adicionar à lista de chaves válidas se ainda não estiver lá
+        let validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
+        if (!validKeys.includes(keyParam)) {
+            validKeys.push(keyParam);
+            localStorage.setItem('validKeys', JSON.stringify(validKeys));
+            console.log('Nova chave adicionada à lista de chaves válidas:', keyParam);
+        }
+        
+        // Remover parâmetros da URL para segurança, mas manter a chave ativa
+        if (authParam) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
         console.log('Autenticação via parâmetros de URL bem-sucedida');
     }
     
-    // Sincronizar chaves com Firebase e GitHub Pages
-    await syncKeysWithGitHub();
-    
-    // Tenta obter as chaves do Firebase primeiro, com fallback para localStorage
-    let validKeys = [];
-    let usedKeys = [];
-    
-    if (window.firebaseKeyManager) {
-        try {
-            // Obter chaves válidas do Firebase
-            validKeys = await window.firebaseKeyManager.getValidKeys();
-            
-            // Sincronizar chaves válidas do localStorage com o Firebase
-            const localValidKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
-            let syncedNewKeys = 0;
-            
-            // Adicionar chaves locais que não estão no Firebase
-            for (const key of localValidKeys) {
-                if (!validKeys.includes(key)) {
-                    await window.firebaseKeyManager.addValidKey(key);
-                    syncedNewKeys++;
-                    // Adicionar à lista local de validKeys para contabilização correta
-                    validKeys.push(key);
-                }
-            }
-            
-            // Atualizar localStorage com chaves do Firebase
-            localStorage.setItem('validKeys', JSON.stringify(validKeys));
-            console.log(`Sincronização completa! Adicionadas ${syncedNewKeys} novas chaves ao Firebase.`);
-            
-            // Obter chaves usadas do Firebase
-            usedKeys = await window.firebaseKeyManager.getUsedKeys();
-            
-            // Atualizar localStorage com chaves usadas do Firebase
-            localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
-            console.log('Chaves obtidas do Firebase com sucesso');
-        } catch (error) {
-            console.error('Erro ao obter chaves do Firebase:', error);
-            // Fallback para localStorage
-            validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
-            usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
-        }
-    } else {
-        // Fallback para localStorage se o Firebase não estiver disponível
-        validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
-        usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
-    }
+    // Carregar chaves válidas e usadas do localStorage
+    const validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
+    const usedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
+    console.log('Chaves válidas carregadas:', validKeys);
+    console.log('Chaves usadas carregadas:', usedKeys);
     
     // Verificar se o usuário tem uma chave de acesso válida em qualquer um dos mecanismos de armazenamento
     let currentKey = localStorage.getItem('currentAccessKey');
+    console.log('Chave atual no localStorage:', currentKey);
     
     // Se não encontrar no localStorage, tentar no sessionStorage
     if (!currentKey) {
@@ -177,7 +120,7 @@ async function checkPageSecurity() {
         if (currentKey) {
             // Se encontrar no sessionStorage, restaurar no localStorage
             localStorage.setItem('currentAccessKey', currentKey);
-            console.log('Chave restaurada do sessionStorage para localStorage');
+            console.log('Chave restaurada do sessionStorage para localStorage:', currentKey);
         }
     }
     
@@ -191,7 +134,7 @@ async function checkPageSecurity() {
                 // Restaurar nos outros mecanismos
                 localStorage.setItem('currentAccessKey', currentKey);
                 sessionStorage.setItem('currentAccessKey', currentKey);
-                console.log('Chave restaurada dos cookies para localStorage e sessionStorage');
+                console.log('Chave restaurada dos cookies para localStorage e sessionStorage:', currentKey);
                 break;
             }
         }
@@ -202,7 +145,10 @@ async function checkPageSecurity() {
     // Se não houver chave de acesso armazenada
     if (!currentKey) {
         console.log('Nenhuma chave de acesso encontrada, redirecionando para login');
-        window.location.href = 'login.html';
+        // Só redireciona se não estiver na página de login
+        if (currentPage !== 'login.html') {
+            window.location.href = 'login.html';
+        }
         return false;
     }
     
@@ -210,22 +156,26 @@ async function checkPageSecurity() {
 
     // Se for a chave de admin, permite acesso
     if (currentKey === adminKey) {
+        console.log('Chave de admin detectada, permitindo acesso');
         return true;
     }
 
-    // Se a chave já foi usada, redireciona para página de chave já utilizada
-    // Mas apenas se não estiver na página de agradecimento ou nos formulários de avaliação
+    // Páginas de avaliação e agradecimento não verificam se a chave já foi usada
     const assessmentPages = ['physiotherapy_assessment_form.html', 'pilates_assessment_form.html', 'consent_terms_physiotherapy.html', 'consent_terms_pilates.html', 'thank_you.html'];
     const isAssessmentPage = assessmentPages.some(page => window.location.pathname.includes(page));
+    console.log('É página de avaliação?', isAssessmentPage);
     
     // Verificar se a chave está na lista de chaves válidas
     const isValidKey = validKeys.includes(currentKey);
+    console.log('A chave é válida?', isValidKey);
     
-    // Se for a chave de admin ou estiver na lista de chaves válidas, continua a verificação
-    // Caso contrário, redireciona para o login
+    // Se a chave não for válida, redirecionar para login
     if (!isValidKey && currentKey !== adminKey && !isAssessmentPage) {
         console.log('Chave não encontrada na lista de chaves válidas, redirecionando para login');
-        window.location.href = 'login.html';
+        // Só redireciona se não estiver na página de login
+        if (currentPage !== 'login.html') {
+            window.location.href = 'login.html';
+        }
         return false;
     }
     
@@ -254,10 +204,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Aguarda um momento para garantir que o Firebase esteja inicializado
             setTimeout(() => {
                 checkPageSecurity();
-            }, 1000);
+            }, 1500); // Aumentado para 1500ms para garantir que o Firebase seja inicializado corretamente
         };
     } else {
         // Se o script do Firebase não foi carregado, verifica a segurança diretamente
-        checkPageSecurity();
+        setTimeout(() => {
+            checkPageSecurity();
+        }, 500); // Adicionado um pequeno atraso mesmo sem o Firebase para garantir que o DOM esteja pronto
     }
 });

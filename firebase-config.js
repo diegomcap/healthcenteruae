@@ -60,7 +60,17 @@ async function getValidKeysFromFirebase() {
     await initializeFirebase();
     const database = firebase.database();
     const snapshot = await database.ref('validKeys').once('value');
-    return snapshot.val() || [];
+    const data = snapshot.val();
+    
+    // Verificar se os dados são um objeto ou um array
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
+      // Se for um objeto (formato usado em login.html), converter para array
+      console.log('Dados de validKeys no formato de objeto, convertendo para array');
+      return Object.keys(data);
+    }
+    
+    // Se for array ou null, retornar como está
+    return data || [];
   } catch (error) {
     console.error('Erro ao obter chaves do Firebase:', error);
     // Fallback para localStorage se o Firebase falhar
@@ -74,7 +84,17 @@ async function getUsedKeysFromFirebase() {
     await initializeFirebase();
     const database = firebase.database();
     const snapshot = await database.ref('usedKeys').once('value');
-    return snapshot.val() || [];
+    const data = snapshot.val();
+    
+    // Verificar se os dados são um objeto ou um array
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
+      // Se for um objeto, converter para array
+      console.log('Dados de usedKeys no formato de objeto, convertendo para array');
+      return Object.keys(data);
+    }
+    
+    // Se for array ou null, retornar como está
+    return data || [];
   } catch (error) {
     console.error('Erro ao obter chaves usadas do Firebase:', error);
     // Fallback para localStorage se o Firebase falhar
