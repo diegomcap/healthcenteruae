@@ -163,21 +163,17 @@ async function checkPageSecurity() {
     const assessmentPages = ['physiotherapy_assessment_form.html', 'pilates_assessment_form.html', 'consent_terms_physiotherapy.html', 'consent_terms_pilates.html', 'thank_you.html'];
     const isAssessmentPage = assessmentPages.some(page => window.location.pathname.includes(page));
     
-    // Verificar se a chave está na lista de chaves válidas antes de verificar se está usada
-    // Isso evita que novas chaves sejam incorretamente redirecionadas para already_used.html
-    if (!validKeys.includes(currentKey) && !isAssessmentPage) {
+    // Se for a chave de admin ou estiver na lista de chaves válidas, continua a verificação
+    // Caso contrário, redireciona para o login
+    if (!validKeys.includes(currentKey) && currentKey !== adminKey && !isAssessmentPage) {
         window.location.href = 'login.html';
         return false;
     }
     
+    // Se a chave já foi usada, redireciona para página de chave já utilizada
+    // Mas apenas se não estiver na página de agradecimento ou nos formulários de avaliação
     if (usedKeys.includes(currentKey) && !isAssessmentPage) {
         window.location.href = 'already_used.html';
-        return false;
-    }
-
-    // Se a chave não for válida, redireciona para o login
-    if (!validKeys.includes(currentKey)) {
-        window.location.href = 'login.html';
         return false;
     }
     

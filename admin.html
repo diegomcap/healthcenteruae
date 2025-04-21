@@ -304,8 +304,10 @@
                     validKeys = [...validKeys, ...newKeys];
                     
                     // Add local keys to Firebase
+                    let syncedNewKeys = 0;
                     for (const key of localOnlyKeys) {
                         await keysRef.child(key).set(true);
+                        syncedNewKeys++;
                     }
                     
                     // Save updated keys to localStorage
@@ -314,14 +316,17 @@
                     // Update display
                     displayKeys();
                     
-                    syncStatus.textContent = `Synchronization complete! Added ${newKeys.length} new keys from Firebase.`;
+                    // Mostrar quantas chaves foram adicionadas ao Firebase e quantas foram obtidas do Firebase
+                    syncStatus.textContent = `Synchronization complete! Added ${syncedNewKeys} new keys to Firebase and received ${newKeys.length} new keys from Firebase.`;
                     syncStatus.style.color = '#27ae60';
                 } else {
                     // No keys in Firebase, push all local keys
+                    let syncedNewKeys = 0;
                     for (const key of validKeys) {
                         await keysRef.child(key).set(true);
+                        syncedNewKeys++;
                     }
-                    syncStatus.textContent = 'Synchronization complete! All local keys have been sent to Firebase.';
+                    syncStatus.textContent = `Synchronization complete! Added ${syncedNewKeys} new keys to Firebase.`;
                     syncStatus.style.color = '#27ae60';
                 }
             } catch (error) {
