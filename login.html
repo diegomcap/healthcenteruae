@@ -293,8 +293,9 @@
                     console.log('Firebase snapshot exists:', snapshot.exists());
                     
                     if (snapshot.exists()) {
-                        // Key exists in Firebase, store it in localStorage
-                        localStorage.setItem('currentKey', accessKey);
+                        // Key exists in Firebase, store it in localStorage and sessionStorage for redundancy
+                        localStorage.setItem('currentAccessKey', accessKey);
+                        sessionStorage.setItem('currentAccessKey', accessKey);
                         console.log('Valid key found in Firebase, redirecting to index.html');
                         
                         // Log successful login
@@ -302,28 +303,34 @@
                         activityLog.push(logEntry);
                         localStorage.setItem('activityLog', JSON.stringify(activityLog));
                         
+                        // Adicionar a chave ao localStorage validKeys também para redundância
+                        const validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
+                        if (!validKeys.includes(accessKey)) {
+                            validKeys.push(accessKey);
+                            localStorage.setItem('validKeys', JSON.stringify(validKeys));
+                        }
+                        
                         // Redirecionar para a página principal com um pequeno atraso para garantir que o localStorage seja atualizado
                         submitButton.textContent = 'Authorized access! Redirecting...';
                         submitButton.style.backgroundColor = '#27ae60';
                         
+                        // Definir um cookie como método adicional de persistência
+                        document.cookie = `currentAccessKey=${accessKey}; path=/; max-age=86400`; // válido por 1 dia
+                        
                         setTimeout(() => {
-                            window.location.href = 'index.html';
+                            window.location.href = 'index.html?auth=true&key=' + encodeURIComponent(accessKey);
                         }, 1000);
                         return false;
                     } else {
                         // Fallback to localStorage if not in Firebase
                         const validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
                         
-                        // Armazenar a chave atual para uso posterior
-                        localStorage.setItem('currentAccessKey', accessKey);
-                        
-                        // Armazenar a chave atual para uso posterior
-                        localStorage.setItem('currentAccessKey', accessKey);
-                        
                         // Validate the access key from localStorage
                         if (validKeys.includes(accessKey)) {
-                            // Store the key for later use
-                            localStorage.setItem('currentKey', accessKey);
+                            // Store the key in multiple storage mechanisms for redundância
+                            localStorage.setItem('currentAccessKey', accessKey);
+                            sessionStorage.setItem('currentAccessKey', accessKey);
+                            document.cookie = `currentAccessKey=${accessKey}; path=/; max-age=86400`; // válido por 1 dia
                             
                             // Also add it to Firebase for future use
                             try {
@@ -344,7 +351,7 @@
                             submitButton.style.backgroundColor = '#27ae60';
                             
                             setTimeout(() => {
-                                window.location.href = 'index.html';
+                                window.location.href = 'index.html?auth=true&key=' + encodeURIComponent(accessKey);
                             }, 1000);
                             return false;
                         } else {
@@ -363,7 +370,7 @@
                     const validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
                     
                     if (validKeys.includes(accessKey)) {
-                        localStorage.setItem('currentKey', accessKey);
+                        localStorage.setItem('currentAccessKey', accessKey);
                         
                         // Redirecionar para a página principal com um pequeno atraso para garantir que o localStorage seja atualizado
                         submitButton.textContent = 'Authorized access! Redirecting...';
