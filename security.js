@@ -30,24 +30,29 @@ async function syncKeysWithGitHub() {
             
             // Verificar se a chave já está marcada como usada no Firebase
             let isUsed = false;
+            let validKeys = [];
             if (window.firebaseKeyManager) {
                 try {
                     const usedKeys = await window.firebaseKeyManager.getUsedKeys();
                     isUsed = usedKeys.includes(keyParam);
+                    // Obter também as chaves válidas para verificar se já existe
+                    validKeys = await window.firebaseKeyManager.getValidKeys();
                 } catch (error) {
                     console.error('Erro ao verificar chaves usadas:', error);
                     // Fallback para localStorage
                     const localUsedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
                     isUsed = localUsedKeys.includes(keyParam);
+                    validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
                 }
             } else {
                 // Fallback para localStorage
                 const localUsedKeys = JSON.parse(localStorage.getItem('usedKeys') || '[]');
                 isUsed = localUsedKeys.includes(keyParam);
+                validKeys = JSON.parse(localStorage.getItem('validKeys') || '[]');
             }
             
-            // Se a chave não estiver marcada como usada, adicionar à lista de chaves válidas
-            if (!isUsed) {
+            // Se a chave não estiver marcada como usada e não estiver já na lista de válidas, adicionar à lista de chaves válidas
+            if (!isUsed && !validKeys.includes(keyParam)) {
                 if (window.firebaseKeyManager) {
                     await window.firebaseKeyManager.addValidKey(keyParam);
                     console.log('Chave adicionada ao Firebase com sucesso:', keyParam);
@@ -112,6 +117,8 @@ async function checkPageSecurity() {
                 if (!validKeys.includes(key)) {
                     await window.firebaseKeyManager.addValidKey(key);
                     syncedNewKeys++;
+                    // Adicionar à lista local de validKeys para contabilização correta
+                    validKeys.push(key);
                 }
             }
             
@@ -155,6 +162,13 @@ async function checkPageSecurity() {
     // Mas apenas se não estiver na página de agradecimento ou nos formulários de avaliação
     const assessmentPages = ['physiotherapy_assessment_form.html', 'pilates_assessment_form.html', 'consent_terms_physiotherapy.html', 'consent_terms_pilates.html', 'thank_you.html'];
     const isAssessmentPage = assessmentPages.some(page => window.location.pathname.includes(page));
+    
+    // Verificar se a chave está na lista de chaves válidas antes de verificar se está usada
+    // Isso evita que novas chaves sejam incorretamente redirecionadas para already_used.html
+    if (!validKeys.includes(currentKey) && !isAssessmentPage) {
+        window.location.href = 'login.html';
+        return false;
+    }
     
     if (usedKeys.includes(currentKey) && !isAssessmentPage) {
         window.location.href = 'already_used.html';
